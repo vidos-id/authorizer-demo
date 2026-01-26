@@ -81,7 +81,7 @@ No formal testing framework currently implemented. Testing is manual via:
 - Build verification: `bun run build`
 
 ### Git Workflow
-- Repository: https://github.com/mailchain/vidos-authorizer-demo
+- Repository: https://github.com/vidos-id/authorizer-demo
 - Standard GitHub flow (feature branches → main)
 - Commits should be descriptive and focused
 
@@ -154,7 +154,7 @@ Browser-native API (`navigator.credentials.get()`) for credential exchange:
 **Documentation:**
 - Main site: https://vidos.id
 - Docs: https://docs.vidos.id
-- GitHub: https://github.com/mailchain/vidos-authorizer-demo
+- GitHub: https://github.com/vidos-id/authorizer-demo
 
 **UI Components:**
 - shadcn/ui components (Radix UI primitives)

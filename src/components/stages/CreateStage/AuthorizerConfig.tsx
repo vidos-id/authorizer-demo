@@ -89,7 +89,7 @@ export function AuthorizerConfig() {
 					<>
 						Using the Vidos Managed instance (no setup required).{" "}
 						<a
-							href="https://github.com/mailchain/vidos-authorizer-demo/blob/main/MANAGED_INSTANCE.md"
+							href="https://github.com/vidos-id/authorizer-demo/blob/main/MANAGED_INSTANCE.md"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="text-primary underline hover:no-underline"
@@ -101,7 +101,7 @@ export function AuthorizerConfig() {
 					<>
 						Enter your Vidos Gateway authorizer URL.{" "}
 						<a
-							href="https://github.com/mailchain/vidos-authorizer-demo/blob/main/GATEWAY_SETUP.md"
+							href="https://github.com/vidos-id/authorizer-demo/blob/main/GATEWAY_SETUP.md"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="text-primary underline hover:no-underline"

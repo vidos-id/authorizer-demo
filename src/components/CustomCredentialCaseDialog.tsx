@@ -201,7 +201,7 @@ export function CustomCredentialCaseDialog({
 							See{" "}
 							<code className="bg-muted px-1 py-0.5 rounded">
 								<a
-									href="https://github.com/mailchain/vidos-authorizer-demo/blob/main/CUSTOM_CREDENTIAL_CASE.md"
+									href="https://github.com/vidos-id/authorizer-demo/blob/main/CUSTOM_CREDENTIAL_CASE.md"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="text-primary hover:underline"

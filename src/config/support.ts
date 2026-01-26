@@ -11,7 +11,7 @@ export const SUPPORT_CONFIG = {
 	/**
 	 * GitHub issues URL for this repository
 	 */
-	githubIssuesUrl: "https://github.com/mailchain/vidos-authorizer-demo/issues",
+	githubIssuesUrl: "https://github.com/vidos-id/authorizer-demo/issues",
 } as const;
 
 /**
