@@ -15,7 +15,7 @@ function App() {
 					</div>
 					<div className="flex items-center justify-center mb-4">
 						<img
-							src="/vidos-authorizer-demo/vidos-logo.svg"
+							src="/authorizer-demo/vidos-logo.svg"
 							alt="Vidos Logo"
 							className="h-16 w-auto dark:invert"
 						/>
@@ -25,7 +25,7 @@ function App() {
 					</p>
 					<p className="text-sm text-muted-foreground mt-2">
 						<a
-							href="https://github.com/mailchain/vidos-authorizer-demo"
+							href="https://github.com/vidos-id/authorizer-demo"
 							target="_blank"
 							rel="noopener noreferrer"
 							className="inline-flex items-center gap-1.5 underline hover:text-foreground transition-colors"
