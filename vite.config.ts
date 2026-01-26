@@ -5,7 +5,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vite.dev/config/
 export default defineConfig({
-	base: "/vidos-authorizer-demo/",
+	base: "/authorizer-demo/",
 	plugins: [react(), tailwindcss(), tsconfigPaths()],
 	build: {
 		rollupOptions: {
