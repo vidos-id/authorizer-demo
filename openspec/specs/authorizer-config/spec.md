@@ -13,34 +13,34 @@ The configuration supports two modes: a pre-configured Vidos Managed instance fo
 
 ## UI Placement
 
-The authorizer configuration is located within the **Advanced Options** collapsible section on the Create Authorization Request page. This placement reflects that most users will use the default Vidos Managed instance, while power users who need custom instances can easily access the configuration within the advanced settings.
+The authorizer configuration is located within the **App Configuration** collapsible section, positioned **above** the tab navigation on the Create Authorization Request page. This placement reflects that the instance configuration applies globally to all tabs (Templates, Builder, Raw JSON), while keeping it collapsed by default for users who use the Vidos Managed instance.
 
 ## Requirements
 
-### Requirement: Advanced Options Auto-Expansion
+### Requirement: App Configuration Auto-Expansion
 
-The application SHALL automatically expand the Advanced Options section when the user has previously selected "Own instance".
+The application SHALL automatically expand the App Configuration section when the user has previously selected "Own instance".
 
-#### Scenario: Advanced Options collapsed by default
+#### Scenario: App Configuration collapsed by default
 
 - **WHEN** a user opens the Create Authorization Request page
 - **AND** the "Vidos Managed instance" is selected
-- **THEN** the Advanced Options section SHALL be collapsed by default
-- **AND** the authorizer configuration SHALL be hidden until the user expands Advanced Options
+- **THEN** the App Configuration section SHALL be collapsed by default
+- **AND** the authorizer configuration SHALL be hidden until the user expands App Configuration
 
-#### Scenario: Advanced Options expanded for own instance
+#### Scenario: App Configuration expanded for own instance
 
 - **WHEN** a user opens the Create Authorization Request page
 - **AND** the "Own instance" is selected (from a previous session)
-- **THEN** the Advanced Options section SHALL be automatically expanded
+- **THEN** the App Configuration section SHALL be automatically expanded
 - **AND** the authorizer configuration SHALL be visible immediately
 
-#### Scenario: Visual container for Advanced Options
+#### Scenario: Visual container for App Configuration
 
-- **WHEN** the Advanced Options section is expanded
+- **WHEN** the App Configuration section is expanded
 - **THEN** all content SHALL be contained within a bordered container
 - **AND** the container SHALL have rounded corners and subtle background color
-- **AND** the visual treatment SHALL clearly identify what content is part of Advanced Options
+- **AND** the visual treatment SHALL clearly identify what content is part of App Configuration
 
 ### Requirement: Instance Type Selection
 

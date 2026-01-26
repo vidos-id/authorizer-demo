@@ -6,6 +6,7 @@ import {
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAppStore } from "@/stores/appStore";
 import { CredentialSetBuilder } from "./CredentialSetBuilder";
@@ -16,10 +17,21 @@ export function CredentialSetList() {
 	const removeCredentialSet = useAppStore((state) => state.removeCredentialSet);
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 md:space-y-6">
+			<Label>Credential Sets (DCQL)</Label>
+
 			{credentialSets.length === 0 ? (
-				<div className="text-sm text-muted-foreground italic p-4 border border-dashed rounded">
-					No credential sets yet. Click "New Credential Set" to create one.
+				<div className="p-6 border rounded-md border-dashed text-center">
+					<p className="text-sm text-muted-foreground mb-4">
+						(optional)
+						<br />
+						Add a credential set to request credentials with more complex OR and
+						AND logic using DCQL.
+					</p>
+					<Button type="button" variant="outline" onClick={addCredentialSet}>
+						<Plus className="h-4 w-4 mr-2" />
+						Add Credential Set
+					</Button>
 				</div>
 			) : (
 				<>
@@ -34,18 +46,17 @@ export function CredentialSetList() {
 						))}
 					</div>
 					<Separator className="my-4" />
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={addCredentialSet}
+					>
+						<Plus className="h-4 w-4 mr-2" />
+						Add Credential Set
+					</Button>
 				</>
 			)}
-
-			<Button
-				type="button"
-				variant="outline"
-				size="sm"
-				onClick={addCredentialSet}
-			>
-				<Plus className="h-4 w-4 mr-2" />
-				New Credential Set
-			</Button>
 		</div>
 	);
 }

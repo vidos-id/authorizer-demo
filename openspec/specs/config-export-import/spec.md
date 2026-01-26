@@ -1,7 +1,8 @@
 # config-export-import Specification
 
 ## Purpose
-TBD - created by archiving change add-config-export-import. Update Purpose after archive.
+
+Enable users to backup, transfer, and restore their custom configuration (instance settings, custom credential cases, and request templates) via JSON file export/import, facilitating easy sharing between devices or team members.
 ## Requirements
 ### Requirement: Configuration Export
 
@@ -100,31 +101,19 @@ The exported configuration file SHALL follow a defined JSON schema.
 - **AND** each template SHALL include credentialSets array
 - **AND** each template SHALL have isBuiltIn set to false
 
-### Requirement: Advanced Section Placement
+### Requirement: App Configuration Section Placement
 
-The export/import controls SHALL be placed in a collapsible "Advanced" section within the authorizer configuration area.
+The export/import controls SHALL be placed in a collapsible "App Configuration" section within the authorizer configuration area.
 
-#### Scenario: Advanced section collapsed by default
+#### Scenario: App Configuration section collapsed by default
 
 - **WHEN** a user views the Create Authorization page
-- **THEN** the "Advanced" section SHALL be collapsed by default
+- **THEN** the "App Configuration" section SHALL be collapsed by default
 - **AND** the section header SHALL indicate it can be expanded
 
-#### Scenario: Expand advanced section
+#### Scenario: Expand App Configuration section
 
-- **WHEN** a user clicks on the "Advanced" section header
+- **WHEN** a user clicks on the "App Configuration" section header
 - **THEN** the section SHALL expand to reveal export and import buttons
 - **AND** the export button SHALL be labeled "Export Configuration"
 - **AND** the import button SHALL be labeled "Import Configuration"
-
-### Requirement: Feature Guidance Note
-
-The application SHALL display a note explaining the usefulness of the export/import feature.
-
-#### Scenario: Guidance note displayed in advanced section
-
-- **WHEN** a user expands the "Advanced" section
-- **THEN** a note SHALL be displayed explaining the feature's purpose
-- **AND** the note SHALL highlight that exporting is useful for transferring configuration to mobile devices where manual entry is tedious
-- **AND** the note MAY mention secondary uses such as backup and sharing with team members
-
