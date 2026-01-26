@@ -22,13 +22,13 @@ import {
 import { buildAuthorizationRequestBody } from "@/utils/requestBuilder";
 import { validateAuthorizationRequest } from "@/utils/validation";
 import { AppConfiguration } from "./AppConfiguration";
-import { BuilderActions } from "./BuilderActions";
 import { CredentialRequestList } from "./CredentialRequestList";
 import { CredentialSetList } from "./CredentialSetList";
 import { JsonEditor } from "./JsonEditor";
 import { ProfileSelector } from "./ProfileSelector";
 import { ResponseModeSelector } from "./ResponseModeSelector";
 import { SavedJsonRequestsManager } from "./SavedJsonRequestsManager";
+import { SaveTemplateDialog } from "./SaveTemplateDialog";
 import { TemplatesTab } from "./TemplatesTab";
 
 export function CreateStage() {
@@ -47,6 +47,7 @@ export function CreateStage() {
 	const [viewMode, setViewMode] = useState<"templates" | "builder" | "json">(
 		"templates",
 	);
+	const [showSaveDialog, setShowSaveDialog] = useState(false);
 
 	// JSON mode state
 	const rawJsonContent = useAppStore((state) => state.rawJsonContent);
@@ -125,6 +126,21 @@ export function CreateStage() {
 				responseModeConfig,
 				credentialSets,
 			});
+		}
+	};
+
+	const handleTransferToJson = () => {
+		try {
+			const requestBody = buildAuthorizationRequestBody(
+				credentialRequests,
+				responseModeConfig,
+				credentialSets,
+			);
+			const prettyJson = JSON.stringify(requestBody, null, 2);
+			useAppStore.getState().setRawJsonContent(prettyJson);
+			setViewMode("json");
+		} catch (error) {
+			console.error("Failed to transfer to JSON:", error);
 		}
 	};
 
@@ -238,8 +254,31 @@ export function CreateStage() {
 						{/* Credential Sets Section */}
 						<CredentialSetList />
 
-						{/* Builder Actions: Save as Template & Transfer to JSON */}
-						<BuilderActions disabled={!builderValidation.valid} />
+						{/* Builder hints */}
+						<div className="text-sm text-muted-foreground text-center space-y-1">
+							<p>
+								Use this request often?{" "}
+								<button
+									type="button"
+									onClick={() => setShowSaveDialog(true)}
+									disabled={credentialRequests.length === 0}
+									className="text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+								>
+									Save as template
+								</button>
+							</p>
+							<p>
+								Need more control?{" "}
+								<button
+									type="button"
+									onClick={handleTransferToJson}
+									disabled={!builderValidation.valid}
+									className="text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+								>
+									Edit as raw JSON
+								</button>
+							</p>
+						</div>
 					</TabsContent>
 
 					{/* JSON Tab Content */}
@@ -354,6 +393,11 @@ export function CreateStage() {
 						)}
 					</div>
 				</div>
+
+				{/* Save Template Dialog */}
+				{showSaveDialog && (
+					<SaveTemplateDialog onClose={() => setShowSaveDialog(false)} />
+				)}
 			</CardContent>
 		</Card>
 	);

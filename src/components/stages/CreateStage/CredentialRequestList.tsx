@@ -58,7 +58,7 @@ export function CredentialRequestList() {
 				<Label>Credential Requests</Label>
 				<button
 					type="button"
-					className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+					className="text-xs text-muted-foreground hover:text-foreground hover:underline cursor-pointer"
 					onClick={() => setIsCustomCasesDialogOpen(true)}
 				>
 					Manage custom credential types
