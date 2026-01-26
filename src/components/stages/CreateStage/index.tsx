@@ -1,4 +1,4 @@
-import { ChevronRight, Eye, Send } from "lucide-react";
+import { Eye, Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { JsonCollapsible } from "@/components/JsonCollapsible";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -10,11 +10,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import {
-	Collapsible,
-	CollapsibleContent,
-	CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCreateAuthorizationMutation } from "@/queries/useCreateAuthorizationMutation";
@@ -25,7 +21,7 @@ import {
 } from "@/utils/jsonRequestValidation";
 import { buildAuthorizationRequestBody } from "@/utils/requestBuilder";
 import { validateAuthorizationRequest } from "@/utils/validation";
-import { AdvancedOptions } from "./AdvancedOptions";
+import { AppConfiguration } from "./AppConfiguration";
 import { BuilderActions } from "./BuilderActions";
 import { CredentialRequestList } from "./CredentialRequestList";
 import { CredentialSetList } from "./CredentialSetList";
@@ -54,9 +50,6 @@ export function CreateStage() {
 
 	// JSON mode state
 	const rawJsonContent = useAppStore((state) => state.rawJsonContent);
-
-	// Credential sets section collapsed state
-	const [credentialSetsExpanded, setCredentialSetsExpanded] = useState(false);
 
 	const [jsonValidation, setJsonValidation] = useState<JsonValidationResult>({
 		valid: false,
@@ -197,6 +190,8 @@ export function CreateStage() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6 md:space-y-8">
+				<AppConfiguration />
+
 				{/* Tab Navigation */}
 				<Tabs
 					value={viewMode}
@@ -240,32 +235,8 @@ export function CreateStage() {
 
 						<Separator />
 
-						{/* Credential Sets Section - Collapsible */}
-						<Collapsible
-							open={credentialSetsExpanded}
-							onOpenChange={setCredentialSetsExpanded}
-						>
-							<div className="space-y-4">
-								<CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-									<ChevronRight className="h-4 w-4 transition-transform [[data-state=open]>&]:rotate-90" />
-									<div className="flex flex-col items-start gap-0.5">
-										<span className="font-medium">Credential Sets (DCQL)</span>
-										<span className="text-xs">
-											Options within a set are alternatives (OR). Multiple
-											credentials in one option are combined (AND).
-										</span>
-									</div>
-								</CollapsibleTrigger>
-
-								<CollapsibleContent className="pt-4">
-									<CredentialSetList />
-								</CollapsibleContent>
-							</div>
-						</Collapsible>
-
-						<Separator />
-
-						<AdvancedOptions />
+						{/* Credential Sets Section */}
+						<CredentialSetList />
 
 						{/* Builder Actions: Save as Template & Transfer to JSON */}
 						<BuilderActions disabled={!builderValidation.valid} />

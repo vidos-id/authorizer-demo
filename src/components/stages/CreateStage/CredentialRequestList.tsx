@@ -1,5 +1,6 @@
 import { ChevronRight, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { CustomCredentialCaseManagerDialog } from "@/components/CustomCredentialCaseManagerDialog";
 import { Button } from "@/components/ui/button";
 import {
 	Collapsible,
@@ -19,6 +20,7 @@ import { CredentialRequestBuilder } from "./CredentialRequestBuilder";
 
 export function CredentialRequestList() {
 	const requests = useAppStore((state) => state.credentialRequests);
+	const [isCustomCasesDialogOpen, setIsCustomCasesDialogOpen] = useState(false);
 	const addCredentialRequest = useAppStore(
 		(state) => state.addCredentialRequest,
 	);
@@ -52,7 +54,21 @@ export function CredentialRequestList() {
 
 	return (
 		<div className="space-y-4 md:space-y-6">
-			<Label>Credential Requests</Label>
+			<div className="flex items-center justify-between">
+				<Label>Credential Requests</Label>
+				<button
+					type="button"
+					className="text-xs text-muted-foreground hover:text-foreground hover:underline"
+					onClick={() => setIsCustomCasesDialogOpen(true)}
+				>
+					Manage custom credential types
+				</button>
+			</div>
+
+			<CustomCredentialCaseManagerDialog
+				open={isCustomCasesDialogOpen}
+				onOpenChange={setIsCustomCasesDialogOpen}
+			/>
 
 			{requests.length === 0 ? (
 				<div className="p-6 border rounded-md border-dashed text-center">
@@ -61,7 +77,7 @@ export function CredentialRequestList() {
 					</p>
 					<Button type="button" onClick={handleAdd}>
 						<Plus className="h-4 w-4 mr-2" />
-						Add First Request
+						Add First Credential Request
 					</Button>
 				</div>
 			) : (

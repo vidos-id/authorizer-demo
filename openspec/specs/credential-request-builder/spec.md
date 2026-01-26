@@ -40,6 +40,31 @@ The application SHALL provide clear, informative context about the authorization
 - **THEN** appropriate spacing SHALL be applied between title and description (`space-y-1.5`)
 - **AND** the visual hierarchy SHALL guide users through the workflow understanding
 
+### Requirement: Custom Credential Types Link
+
+The application SHALL provide a single contextual link above the credential request list to manage custom credential type definitions.
+
+#### Scenario: Display custom types management link
+
+- **WHEN** a user views the credential requests section in Builder tab
+- **THEN** a "Manage custom credential types" link SHALL be displayed once
+- **AND** the link SHALL be positioned above the credential request list (near the section header)
+- **AND** the link SHALL use subtle styling (small text, muted color) to appear as secondary action
+
+#### Scenario: Open custom credential case manager
+
+- **WHEN** a user clicks the "Manage custom credential types" link
+- **THEN** the Custom Credential Case dialog SHALL open
+- **AND** the user SHALL be able to create, edit, clone, or delete custom cases
+- **AND** upon closing the dialog, any new custom cases SHALL appear in document type dropdowns
+- **AND** any new formats SHALL appear in format dropdowns when a custom type is selected
+
+#### Scenario: Single link for all credential requests
+
+- **WHEN** multiple credential requests exist in the builder
+- **THEN** only one "Manage custom credential types" link SHALL be displayed
+- **AND** the link SHALL NOT be repeated inside each credential request item
+
 ### Requirement: Document Type Selection
 
 The application SHALL allow users to select a document type for each credential request from the supported types.
