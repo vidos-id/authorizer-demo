@@ -46,12 +46,12 @@ const statusConfig: Record<
 	},
 	authorized: {
 		title: "Authorized",
-		description: "The credential request was successfully authorized",
+		description: "The credential was successfully authorized",
 		variant: "default",
 	},
 	rejected: {
 		title: "Rejected",
-		description: "The wallet rejected the authorization request",
+		description: "The authorizer rejected the wallet credential",
 		variant: "destructive",
 	},
 	error: {
