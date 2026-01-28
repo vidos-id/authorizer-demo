@@ -1,7 +1,9 @@
 # request-templates Specification
 
 ## Purpose
-TBD - created by archiving change add-request-templates. Update Purpose after archive.
+
+This specification defines the request templates feature, which provides pre-configured credential request configurations for common verification scenarios (age verification, identity, address, KYC, driving). Users can apply built-in templates or create custom templates from their configurations.
+
 ## Requirements
 ### Requirement: Templates Tab Display
 

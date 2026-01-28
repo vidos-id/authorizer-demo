@@ -1,7 +1,9 @@
 # theme-toggle Specification
 
 ## Purpose
-TBD - created by archiving change add-dark-mode-toggle. Update Purpose after archive.
+
+This specification defines the theme toggle feature that allows users to switch between light, dark, and system-following theme modes, with persistence across sessions.
+
 ## Requirements
 ### Requirement: Theme Mode Selection
 The system SHALL provide three theme modes: light, dark, and system.

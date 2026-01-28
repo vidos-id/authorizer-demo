@@ -1,7 +1,9 @@
 # json-display Specification
 
 ## Purpose
-TBD - created by archiving change add-pretty-json-display. Update Purpose after archive.
+
+This specification defines the JSON display components used throughout the application, including syntax highlighting, collapsible nodes for nested structures, and the lightweight implementation approach without external dependencies.
+
 ## Requirements
 ### Requirement: JSON Syntax Highlighting
 The system SHALL render JSON values with color-coded syntax highlighting to distinguish between different value types.

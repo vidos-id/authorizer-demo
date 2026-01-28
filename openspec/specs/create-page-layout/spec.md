@@ -1,7 +1,9 @@
 # create-page-layout Specification
 
 ## Purpose
-TBD - created by archiving change reorganize-advanced-settings. Update Purpose after archive.
+
+This specification defines the layout and organization of the Create Authorization Request page, including the collapsible App Configuration section that contains global settings (authorizer instance configuration and export/import) positioned above the tab navigation.
+
 ## Requirements
 ### Requirement: App Configuration Section
 

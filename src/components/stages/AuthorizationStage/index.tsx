@@ -11,6 +11,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthorizationStatusQuery } from "@/queries/useAuthorizationStatusQuery";
 import { useAppStore } from "@/stores/appStore";
+import { AuthorizationRequestJwtViewer } from "./AuthorizationRequestJwtViewer";
 import { AuthorizeLink } from "./AuthorizeLink";
 import { DCAPIButton } from "./DCAPIButton";
 import { QRCodeDisplay } from "./QRCodeDisplay";
@@ -70,6 +71,8 @@ export function AuthorizationStage() {
 						defaultOpen={false}
 					/>
 				)}
+
+				{isDirectPost && <AuthorizationRequestJwtViewer />}
 
 				<div className="flex items-center justify-center gap-2">
 					<div className="h-2 w-2 rounded-full bg-primary animate-pulse" />

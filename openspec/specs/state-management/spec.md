@@ -2,7 +2,7 @@
 
 ## Purpose
 
-TBD - created by archiving change refactor-app-store. Update Purpose after archive.
+This specification defines the Zustand-based state management architecture, including the slice-based organization, typed selectors, persistence configuration, and cross-slice state access patterns used throughout the application.
 
 ## Requirements
 
