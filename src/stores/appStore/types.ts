@@ -101,9 +101,11 @@ export interface SessionSlice {
 export interface UiSlice {
 	showPreview: boolean;
 	error: StoreError;
+	createViewMode: "templates" | "builder" | "json";
 	setShowPreview: (show: boolean) => void;
 	setError: (error: StoreError) => void;
 	resetError: () => void;
+	setCreateViewMode: (viewMode: "templates" | "builder" | "json") => void;
 }
 
 export interface DebugSlice {

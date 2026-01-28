@@ -42,11 +42,9 @@ export function CreateStage() {
 	const setShowPreview = useAppStore((state) => state.setShowPreview);
 	const setLastRequest = useAppStore((state) => state.setLastRequest);
 	const selectedTemplateId = useAppStore((state) => state.selectedTemplateId);
+	const viewMode = useAppStore((state) => state.createViewMode);
+	const setViewMode = useAppStore((state) => state.setCreateViewMode);
 
-	// View mode state: templates | builder | json
-	const [viewMode, setViewMode] = useState<"templates" | "builder" | "json">(
-		"templates",
-	);
 	const [showSaveDialog, setShowSaveDialog] = useState(false);
 
 	// JSON mode state
