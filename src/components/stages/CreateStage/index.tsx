@@ -30,6 +30,7 @@ import { ResponseModeSelector } from "./ResponseModeSelector";
 import { SavedJsonRequestsManager } from "./SavedJsonRequestsManager";
 import { SaveTemplateDialog } from "./SaveTemplateDialog";
 import { TemplatesTab } from "./TemplatesTab";
+import { TrustAnchorConfig } from "./TrustAnchorConfig";
 
 export function CreateStage() {
 	const authorizerUrl = useAppStore(selectAuthorizerUrl);
@@ -205,6 +206,7 @@ export function CreateStage() {
 			</CardHeader>
 			<CardContent className="space-y-6 md:space-y-8">
 				<AppConfiguration />
+				<TrustAnchorConfig />
 
 				{/* Tab Navigation */}
 				<Tabs
