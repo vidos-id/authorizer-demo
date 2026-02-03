@@ -1,5 +1,111 @@
 openapi: 3.0.2
 paths:
+  /instances/oid4vp-trust-anchor:
+    get:
+      description: Retrieves the X.509 certificate for the configured trust anchor of
+        an authorizer instance.
+      summary: Get trust anchor certificate
+      tags: []
+      parameters: []
+      operationId: getTrustAnchorCertificate
+      responses:
+        "200":
+          description: Trust anchor certificate response
+          content:
+            application/json:
+              schema:
+                description: Trust anchor certificate response
+                type: object
+                properties:
+                  anchorType:
+                    description: Type of the trust anchor
+                    type: string
+                    enum:
+                      - root
+                      - account
+                      - instance
+                  certificate:
+                    description: PEM-encoded X.509 certificate
+                    type: string
+                required:
+                  - anchorType
+                  - certificate
+        "400":
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                description: Bad request error
+                type: object
+                properties:
+                  type:
+                    description: Error type identifier
+                    type: string
+                  message:
+                    description: User-facing error message
+                    type: string
+                  action:
+                    description: Suggested action to resolve the error
+                    type: string
+                required:
+                  - message
+        "401":
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - authentication required
+                type: object
+                properties:
+                  type:
+                    description: Error type identifier
+                    type: string
+                  message:
+                    description: User-facing error message
+                    type: string
+                  action:
+                    description: Suggested action to resolve the error
+                    type: string
+                required:
+                  - message
+        "404":
+          description: Resource not found error
+          content:
+            application/json:
+              schema:
+                description: Resource not found error
+                type: object
+                properties:
+                  type:
+                    description: Error type identifier
+                    type: string
+                  message:
+                    description: User-facing error message
+                    type: string
+                  action:
+                    description: Suggested action to resolve the error
+                    type: string
+                required:
+                  - message
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                description: Internal server error
+                type: object
+                properties:
+                  type:
+                    description: Error type identifier
+                    type: string
+                  message:
+                    description: User-facing error message
+                    type: string
+                  action:
+                    description: Suggested action to resolve the error
+                    type: string
+                required:
+                  - message
   /openid4/vp/v1_0/.well-known/openid-configuration:
     get:
       description: Returns the OpenID Connect provider metadata configuration. This
@@ -2075,7 +2181,13 @@ paths:
                                               minItems: 1
                                               type: array
                                               items:
-                                                type: string
+                                                anyOf:
+                                                  - type: string
+                                                    nullable: true
+                                                  - type: integer
+                                                    minimum: 0
+                                                    maximum: 9007199254740991
+                                                    nullable: true
                                             values:
                                               description: Allowed values for this claim
                                               minItems: 1
@@ -2468,7 +2580,13 @@ paths:
                                               minItems: 1
                                               type: array
                                               items:
-                                                type: string
+                                                anyOf:
+                                                  - type: string
+                                                    nullable: true
+                                                  - type: integer
+                                                    minimum: 0
+                                                    maximum: 9007199254740991
+                                                    nullable: true
                                             values:
                                               description: Allowed values for this claim
                                               minItems: 1
@@ -2841,7 +2959,13 @@ paths:
                                               minItems: 1
                                               type: array
                                               items:
-                                                type: string
+                                                anyOf:
+                                                  - type: string
+                                                    nullable: true
+                                                  - type: integer
+                                                    minimum: 0
+                                                    maximum: 9007199254740991
+                                                    nullable: true
                                             values:
                                               description: Allowed values for this claim
                                               minItems: 1
@@ -3453,7 +3577,13 @@ paths:
                                                     minItems: 1
                                                     type: array
                                                     items:
-                                                      type: string
+                                                      anyOf:
+                                                        - type: string
+                                                          nullable: true
+                                                        - type: integer
+                                                          minimum: 0
+                                                          maximum: 9007199254740991
+                                                          nullable: true
                                                   values:
                                                     description: Allowed values for this claim
                                                     minItems: 1
@@ -3923,11 +4053,11 @@ paths:
                                 - library
                                 - logs
                                 - resolver
-                                - trail
                                 - validator
                                 - verifier
                                 - accounts
                                 - iam
+                                - trail
                             error:
                               type: object
                               properties:
@@ -4091,11 +4221,11 @@ paths:
                                 - library
                                 - logs
                                 - resolver
-                                - trail
                                 - validator
                                 - verifier
                                 - accounts
                                 - iam
+                                - trail
                             data:
                               type: object
                               additionalProperties: {}
