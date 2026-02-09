@@ -5,4 +5,6 @@ export const authorizationKeys = {
 	policy: (id?: string) =>
 		[...authorizationKeys.detail(id), "policy-response"] as const,
 	jwt: (id?: string) => [...authorizationKeys.detail(id), "jwt"] as const,
+	credentials: (id?: string) =>
+		[...authorizationKeys.detail(id), "credentials"] as const,
 };

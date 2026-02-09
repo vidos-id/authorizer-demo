@@ -83,6 +83,19 @@ export interface PolicyResponse {
 	authorizationId: string;
 }
 
+// Credentials response structures (from API)
+export interface SubmittedCredential {
+	path: (string | number)[]; // e.g., ["cred1", 0, 0, "org.iso.18013.5.1"]
+	format: string; // "mdoc", "ietf.dc-sd-jwt"
+	credentialType: string; // "org.iso.18013.5.1.mDL", "eu.europa.ec.eudi.pid.1"
+	claims: Record<string, unknown>;
+}
+
+export interface CredentialsResponse {
+	authorizationId: string;
+	credentials: SubmittedCredential[];
+}
+
 // Saved JSON request for custom authorization requests
 export interface SavedJsonRequest {
 	id: string; // UUID

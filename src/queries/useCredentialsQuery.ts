@@ -2,15 +2,14 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createAuthorizerClient } from "@/api/client";
 import { selectAuthorizerUrl, useAppStore } from "@/stores/appStore";
 import type { AuthorizationStatusResponse } from "@/types/api";
+import type { CredentialsResponse } from "@/types/app";
 import { authorizationKeys } from "./keys";
 
-interface UsePolicyResponseQueryOptions {
+interface UseCredentialsQueryOptions {
 	enabled?: boolean;
 }
 
-export function usePolicyResponseQuery(
-	options: UsePolicyResponseQueryOptions = {},
-) {
+export function useCredentialsQuery(options: UseCredentialsQueryOptions = {}) {
 	const authorizationId = useAppStore((state) => state.authorizationId);
 	const authorizerUrl = useAppStore(selectAuthorizerUrl);
 	const stage = useAppStore((state) => state.stage);
@@ -29,17 +28,27 @@ export function usePolicyResponseQuery(
 		!!authorizationId;
 
 	return useQuery({
-		queryKey: authorizationId ? authorizationKeys.policy(authorizationId) : [],
-		queryFn: async () => {
+		queryKey: authorizationId
+			? authorizationKeys.credentials(authorizationId)
+			: [],
+		queryFn: async (): Promise<CredentialsResponse> => {
 			if (!authorizationId) throw new Error("No authorization ID provided");
 			const client = createAuthorizerClient(authorizerUrl);
-			const { data, error } = await client.GET(
-				"/openid4/vp/v1_0/authorizations/{authorizationId}/policy-response",
+			const { data, error, response } = await client.GET(
+				"/openid4/vp/v1_0/authorizations/{authorizationId}/credentials",
 				{ params: { path: { authorizationId } } },
 			);
 
-			if (error) {
-				throw new Error(error.message || "Failed to fetch policy response");
+			// Handle 404 as empty state (not an error)
+			if (response.status === 404) {
+				return {
+					authorizationId,
+					credentials: [],
+				};
+			}
+
+			if (error || !data) {
+				throw new Error(error?.message || "Failed to fetch credentials");
 			}
 
 			return data;
