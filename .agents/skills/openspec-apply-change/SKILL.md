@@ -6,7 +6,7 @@ compatibility: Requires openspec CLI.
 metadata:
   author: openspec
   version: "1.0"
-  generatedBy: "1.0.2"
+  generatedBy: "1.1.1"
 ---
 
 Implement tasks from an OpenSpec change.
@@ -66,14 +66,12 @@ Implement tasks from an OpenSpec change.
 
 6. **Implement tasks (loop until done or blocked)**
 
-   Group tasks into batches that are small but complete slices of work (1-5 tasks) that can be finished end-to-end without leaving partial implementations. Prefer grouping by a shared file, feature area, or workflow step so the batch produces a coherent change. Avoid splitting tightly coupled changes across batches.
-
-   For each batch:
-   - Show which tasks are in the batch and why they are grouped
-   - Delegate the batch to the @general subagent with relevant context. ALWAYS delegate, never implement directly.
+   For each pending task:
+   - Show which task is being worked on
+   - Make the code changes required
    - Keep changes minimal and focused
-   - Mark all tasks in the batch complete in the tasks file: `- [ ]` → `- [x]`
-   - Continue to next batch
+   - Mark task complete in the tasks file: `- [ ]` → `- [x]`
+   - Continue to next task
 
    **Pause if:**
    - Task is unclear → ask for clarification
