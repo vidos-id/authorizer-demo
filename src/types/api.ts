@@ -33,6 +33,10 @@ export type AuthorizationStatusResponse =
 export type PolicyResponseData =
 	operations["getPolicyResponse"]["responses"][200]["content"]["application/json"];
 
+// Extract credentials response type
+export type CredentialsResponseData =
+	operations["getCredentials"]["responses"][200]["content"]["application/json"];
+
 // Extract digitalCredentialGetRequest type from DC API response
 type DcApiCreateResponse = Extract<
 	CreateAuthorizationResponse,

@@ -1,4 +1,8 @@
-import type { DigitalCredentialGetRequest, PolicyResponseData } from "./api";
+import type {
+	CredentialsResponseData,
+	DigitalCredentialGetRequest,
+	PolicyResponseData,
+} from "./api";
 
 export type AppStage = "create" | "authorization" | "result";
 
@@ -83,18 +87,9 @@ export interface PolicyResponse {
 	authorizationId: string;
 }
 
-// Credentials response structures (from API)
-export interface SubmittedCredential {
-	path: (string | number)[]; // e.g., ["cred1", 0, 0, "org.iso.18013.5.1"]
-	format: string; // "mdoc", "ietf.dc-sd-jwt"
-	credentialType: string; // "org.iso.18013.5.1.mDL", "eu.europa.ec.eudi.pid.1"
-	claims: Record<string, unknown>;
-}
-
-export interface CredentialsResponse {
-	authorizationId: string;
-	credentials: SubmittedCredential[];
-}
+// Credentials response - re-exported from generated API types
+export type CredentialsResponse = CredentialsResponseData;
+export type SubmittedCredential = CredentialsResponse["credentials"][number];
 
 // Saved JSON request for custom authorization requests
 export interface SavedJsonRequest {

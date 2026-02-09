@@ -69,6 +69,34 @@ export function isDateValue(value: unknown, fieldName?: string): boolean {
 	return false;
 }
 
+// Field name patterns grouped by render mode
+const DATE_ONLY_PATTERNS = new Set([
+	"birth_date",
+	"birthdate",
+	"issuance_date",
+	"issue_date",
+	"iat",
+]);
+
+const DATE_WITH_RELATIVE_PATTERNS = new Set([
+	"expiry_date",
+	"date_of_expiry",
+	"exp",
+]);
+
+const DATE_TIME_PATTERNS = new Set(["effective_from_date", "nbf"]);
+
+const DATE_TIME_WITH_RELATIVE_PATTERNS = new Set(["effective_until_date"]);
+
+function matchesAnyPattern(fieldName: string, patterns: Set<string>): boolean {
+	for (const pattern of patterns) {
+		if (fieldName === pattern || fieldName.includes(pattern)) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /**
  * Determines the render mode for a date field based on its name.
  *
@@ -78,36 +106,19 @@ export function isDateValue(value: unknown, fieldName?: string): boolean {
 export function getDateRenderMode(fieldName: string): DateRenderMode {
 	const lowerFieldName = fieldName.toLowerCase();
 
-	// date-only fields
-	if (
-		lowerFieldName.includes("birth_date") ||
-		lowerFieldName.includes("birthdate") ||
-		lowerFieldName.includes("issuance_date") ||
-		lowerFieldName.includes("issue_date") ||
-		lowerFieldName === "iat"
-	) {
+	if (matchesAnyPattern(lowerFieldName, DATE_ONLY_PATTERNS)) {
 		return "date-only";
 	}
 
-	// date-with-relative fields
-	if (
-		lowerFieldName.includes("expiry_date") ||
-		lowerFieldName.includes("date_of_expiry") ||
-		lowerFieldName === "exp"
-	) {
+	if (matchesAnyPattern(lowerFieldName, DATE_WITH_RELATIVE_PATTERNS)) {
 		return "date-with-relative";
 	}
 
-	// date-time fields
-	if (
-		lowerFieldName.includes("effective_from_date") ||
-		lowerFieldName === "nbf"
-	) {
+	if (matchesAnyPattern(lowerFieldName, DATE_TIME_PATTERNS)) {
 		return "date-time";
 	}
 
-	// date-time-with-relative fields
-	if (lowerFieldName.includes("effective_until_date")) {
+	if (matchesAnyPattern(lowerFieldName, DATE_TIME_WITH_RELATIVE_PATTERNS)) {
 		return "date-time-with-relative";
 	}
 
