@@ -4303,6 +4303,126 @@ paths:
                     type: string
                 required:
                   - message
+  /openid4/vp/v1_0/authorizations/{authorizationId}/credentials:
+    get:
+      description: Retrieves the extracted and normalized credentials from a completed
+        authorization request. Returns an array of credentials with their paths,
+        formats, types, and extracted claims. Returns an empty array for
+        authorizations where credential extraction was not performed or failed.
+      summary: Get extracted credentials from authorization
+      tags: []
+      parameters:
+        - name: authorizationId
+          in: path
+          required: true
+          schema:
+            type: string
+      operationId: getCredentials
+      responses:
+        "200":
+          description: Extracted credentials from the authorization request
+          content:
+            application/json:
+              schema:
+                description: Extracted credentials from the authorization request
+                type: object
+                properties:
+                  authorizationId:
+                    description: Unique identifier of the authorization request
+                    type: string
+                  credentials:
+                    description: Array of extracted credentials from the presentation, empty if none
+                      stored
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        path:
+                          description: JSON path to the credential in the presentation
+                          type: array
+                          items:
+                            anyOf:
+                              - type: string
+                              - type: number
+                        format:
+                          description: Credential format (e.g., dc+sd-jwt, mso_mdoc, ldp_vc)
+                          type: string
+                        credentialType:
+                          description: Type identifier of the credential
+                          type: string
+                        claims:
+                          description: Extracted claims from the credential
+                          type: object
+                          additionalProperties: {}
+                          x-propertyNames:
+                            type: string
+                      required:
+                        - path
+                        - format
+                        - credentialType
+                        - claims
+                required:
+                  - authorizationId
+                  - credentials
+        "400":
+          description: Bad request error
+          content:
+            application/json:
+              schema:
+                description: Bad request error
+                type: object
+                properties:
+                  type:
+                    description: Error type identifier
+                    type: string
+                  message:
+                    description: User-facing error message
+                    type: string
+                  action:
+                    description: Suggested action to resolve the error
+                    type: string
+                required:
+                  - message
+        "401":
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                description: Unauthorized - authentication required
+                type: object
+                properties:
+                  type:
+                    description: Error type identifier
+                    type: string
+                  message:
+                    description: User-facing error message
+                    type: string
+                  action:
+                    description: Suggested action to resolve the error
+                    type: string
+                required:
+                  - message
+        "404":
+          description: "404"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                description: Internal server error
+                type: object
+                properties:
+                  type:
+                    description: Error type identifier
+                    type: string
+                  message:
+                    description: User-facing error message
+                    type: string
+                  action:
+                    description: Suggested action to resolve the error
+                    type: string
+                required:
+                  - message
 info:
   title: Vidos Authorizer API
   version: "1.0"
