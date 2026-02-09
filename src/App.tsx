@@ -15,7 +15,7 @@ function App() {
 					</div>
 					<div className="flex items-center justify-center mb-4">
 						<img
-							src="/authorizer-demo/vidos-logo.svg"
+							src="/vidos-logo.svg"
 							alt="Vidos Logo"
 							className="h-16 w-auto dark:invert"
 						/>
