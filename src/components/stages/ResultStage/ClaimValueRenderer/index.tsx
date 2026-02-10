@@ -1,4 +1,5 @@
 import { isDateValue } from "@/utils/dateDetection";
+import { detectImageValue } from "@/utils/imageDetection";
 import { ArrayValue } from "./ArrayValue";
 import { DateValue } from "./DateValue";
 import { ImageValue } from "./ImageValue";
@@ -20,9 +21,10 @@ export function ClaimValueRenderer({
 	credentialType,
 	format,
 }: ClaimValueRendererProps) {
-	// 1. Image detection
-	if (typeof value === "string" && value.startsWith("data:image/")) {
-		return <ImageValue value={value} />;
+	// 1. Image detection (data URLs, raw base64 with magic bytes, or image field names)
+	const imageResult = detectImageValue(value, fieldName);
+	if (imageResult) {
+		return <ImageValue dataUrl={imageResult.dataUrl} />;
 	}
 
 	// 2. Date detection

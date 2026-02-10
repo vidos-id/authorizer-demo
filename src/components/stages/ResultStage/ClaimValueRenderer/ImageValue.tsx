@@ -1,10 +1,11 @@
 import { useState } from "react";
 
 interface ImageValueProps {
-	value: string;
+	/** The data URL to display (e.g., "data:image/jpeg;base64,...") */
+	dataUrl: string;
 }
 
-export function ImageValue({ value }: ImageValueProps) {
+export function ImageValue({ dataUrl }: ImageValueProps) {
 	const [hasError, setHasError] = useState(false);
 
 	if (hasError) {
@@ -13,7 +14,7 @@ export function ImageValue({ value }: ImageValueProps) {
 
 	return (
 		<img
-			src={value}
+			src={dataUrl}
 			alt="Credential"
 			loading="lazy"
 			onError={() => setHasError(true)}
