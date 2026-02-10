@@ -60,31 +60,26 @@ export interface ResponseModeConfig {
 	expectedOrigins?: string[]; // Required for signed protocol
 }
 
-// Policy response structures (from API)
-export interface PolicyError {
-	type: string;
-	title?: string;
-	detail?: string;
-	status?: number;
-	vidosType?: string;
-}
+// Policy response types - extracted from generated API types
+// The API returns a union type for policy results (error case | success case)
+// We extract the error structure from the error case variant
+type PolicyResultFromApi = PolicyResponseData["data"][number];
+
+// Extract the error variant (has required 'error' field)
+type PolicyResultWithError = Extract<PolicyResultFromApi, { error: object }>;
+
+// Re-export the error type from the API
+export type PolicyError = PolicyResultWithError["error"];
+
+// Re-export the error detail type (nested errors array)
+export type PolicyErrorDetail = NonNullable<PolicyError["errors"]>[number];
+
+// Unified PolicyResult type that handles both API variants
+export type PolicyResult = PolicyResultFromApi;
 
 export interface PolicyDefinition {
 	description: string;
 	docsUrl: string;
-}
-
-export interface PolicyResult {
-	path: (string | number)[];
-	policy: string;
-	service: string;
-	error?: PolicyError;
-	data?: unknown; // Credential attributes when successful
-}
-
-export interface PolicyResponse {
-	data: PolicyResult[];
-	authorizationId: string;
 }
 
 // Credentials response - re-exported from generated API types

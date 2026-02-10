@@ -13,6 +13,12 @@ Non-standard commands:
 - `bun run generate-api:local` - regenerate `src/api/authorizer.ts` from OpenAPI with local `authorizer.service.yaml`
 - `bun run generate-api:prod` - regenerate `src/api/authorizer.ts` from OpenAPI with remote prod OpenAPI spec
 
+## API Types
+
+- **Reuse generated API types** from `src/api/authorizer.ts` via `src/types/api.ts` - do not manually redefine types that exist in the OpenAPI spec
+- Use type extraction patterns like `Extract<>`, indexed access, and `NonNullable<>` to derive specific types from the generated unions
+- When the API returns union types, create type guards for safe narrowing instead of type assertions
+
 More guidance:
 
 - [Plan mode](docs/agents/plan-mode.md)

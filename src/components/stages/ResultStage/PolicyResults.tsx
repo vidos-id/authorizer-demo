@@ -7,8 +7,22 @@ import {
 } from "@/components/ui/collapsible";
 import { PrettyJson } from "@/components/ui/PrettyJson";
 import { getPolicyDefinition } from "@/config/policyDefinitions";
-import type { CredentialsResponse, PolicyResult } from "@/types/app";
+import type {
+	CredentialsResponse,
+	PolicyError,
+	PolicyResult,
+} from "@/types/app";
 import { CredentialPathBreadcrumb } from "./CredentialPathBreadcrumb";
+
+// Type guard to check if error is a proper PolicyError object (not unknown/undefined)
+function isPolicyError(error: unknown): error is PolicyError {
+	return (
+		typeof error === "object" &&
+		error !== null &&
+		"type" in error &&
+		typeof (error as PolicyError).type === "string"
+	);
+}
 
 interface PolicyResultsProps {
 	results: PolicyResult[];
@@ -133,7 +147,8 @@ export function PolicyResults({ results, credentials }: PolicyResultsProps) {
 }
 
 function PolicyResultItem({ result }: { result: PolicyResult }) {
-	const hasError = !!result.error;
+	const error = isPolicyError(result.error) ? result.error : null;
+	const hasError = !!error;
 	const hasData = !!result.data;
 	const policyDef = getPolicyDefinition(result.policy, result.service);
 	const policyPrettyName = camelToTitleCase(result.policy);
@@ -186,27 +201,50 @@ function PolicyResultItem({ result }: { result: PolicyResult }) {
 					</div>
 
 					<CollapsibleContent className="mt-3">
-						{hasError && result.error && (
-							<div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded text-sm space-y-1">
-								{result.error.title && (
+						{error && (
+							<div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded text-sm space-y-2">
+								{error.title && (
 									<p className="font-medium text-red-900 dark:text-red-100">
-										{result.error.title}
+										{error.title}
 									</p>
 								)}
-								{result.error.detail && (
+								{error.detail && (
 									<p className="text-red-800 dark:text-red-200">
-										{result.error.detail}
+										{error.detail}
 									</p>
 								)}
-								{result.error.status && (
-									<p className="text-xs text-red-600 dark:text-red-400">
-										Status: {result.error.status}
-									</p>
-								)}
-								{result.error.vidosType && (
-									<p className="text-xs text-red-600 dark:text-red-400 font-mono">
-										Type: {result.error.vidosType}
-									</p>
+								<div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-red-600 dark:text-red-400">
+									{error.status && <span>Status: {error.status}</span>}
+									{error.vidosType && (
+										<span className="font-mono">Type: {error.vidosType}</span>
+									)}
+								</div>
+								{error.errors && error.errors.length > 0 && (
+									<div className="mt-2 pt-2 border-t border-red-200 dark:border-red-800 space-y-1.5">
+										<p className="text-xs font-medium text-red-700 dark:text-red-300 uppercase tracking-wide">
+											Details
+										</p>
+										<ul className="space-y-1">
+											{error.errors.map((err, idx) => (
+												<li
+													key={`${err.pointer ?? idx}-${idx}`}
+													className="text-xs text-red-700 dark:text-red-300"
+												>
+													{err.pointer && (
+														<>
+															<span className="font-mono text-red-600 dark:text-red-400">
+																{err.pointer}
+															</span>
+															<span className="mx-1.5 text-red-400 dark:text-red-600">
+																-
+															</span>
+														</>
+													)}
+													<span>{err.detail}</span>
+												</li>
+											))}
+										</ul>
+									</div>
 								)}
 							</div>
 						)}
