@@ -17,6 +17,23 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuthorizationJwtQuery } from "@/queries/useAuthorizationJwtQuery";
 
+function JwtPrettyPrint({ jwt }: { jwt: string }) {
+	const parts = jwt.split(".");
+	if (parts.length !== 3) {
+		return <>{jwt}</>;
+	}
+	const [header, payload, signature] = parts;
+	return (
+		<>
+			<span className="text-green-500 opacity-85">{header}</span>
+			<span className="text-muted-foreground">.</span>
+			<span className="text-purple-500 opacity-85">{payload}</span>
+			<span className="text-muted-foreground">.</span>
+			<span className="text-cyan-500 opacity-85">{signature}</span>
+		</>
+	);
+}
+
 export function AuthorizationRequestJwtViewer() {
 	const [isOpen, setIsOpen] = useState(false);
 	const [hasOpened, setHasOpened] = useState(false);
@@ -128,7 +145,7 @@ export function AuthorizationRequestJwtViewer() {
 								</div>
 								<div className="bg-muted rounded-md p-3 overflow-auto max-h-32 md:max-h-40">
 									<pre className="text-xs font-mono whitespace-pre-wrap break-all select-all">
-										{jwt}
+										<JwtPrettyPrint jwt={jwt} />
 									</pre>
 								</div>
 							</>
