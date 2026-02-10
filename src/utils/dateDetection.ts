@@ -70,23 +70,35 @@ export function isDateValue(value: unknown, fieldName?: string): boolean {
 }
 
 // Field name patterns grouped by render mode
-const DATE_ONLY_PATTERNS = new Set([
-	"birth_date",
-	"birthdate",
-	"issuance_date",
-	"issue_date",
-	"iat",
+// Note: All date fields now include relative time for better context
+const DATE_ONLY_PATTERNS = new Set<string>([
+	// Empty - most dates benefit from relative context
 ]);
 
 const DATE_WITH_RELATIVE_PATTERNS = new Set([
+	// Birth dates
+	"birth_date",
+	"birthdate",
+	// Issuance dates
+	"issuance_date",
+	"issue_date",
+	"date_of_issuance",
+	"iat",
+	// Expiry dates
 	"expiry_date",
 	"date_of_expiry",
 	"exp",
 ]);
 
-const DATE_TIME_PATTERNS = new Set(["effective_from_date", "nbf"]);
+const DATE_TIME_PATTERNS = new Set<string>([
+	// Empty - date-time fields also benefit from relative context
+]);
 
-const DATE_TIME_WITH_RELATIVE_PATTERNS = new Set(["effective_until_date"]);
+const DATE_TIME_WITH_RELATIVE_PATTERNS = new Set([
+	"effective_from_date",
+	"effective_until_date",
+	"nbf",
+]);
 
 function matchesAnyPattern(fieldName: string, patterns: Set<string>): boolean {
 	for (const pattern of patterns) {

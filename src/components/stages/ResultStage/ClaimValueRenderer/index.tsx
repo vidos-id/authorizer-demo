@@ -1,6 +1,7 @@
 import { isDateValue } from "@/utils/dateDetection";
 import { detectImageValue } from "@/utils/imageDetection";
 import { ArrayValue } from "./ArrayValue";
+import { CodedValue, isCodedValue } from "./CodedValue";
 import { DateValue } from "./DateValue";
 import { ImageValue } from "./ImageValue";
 import { ObjectValue } from "./ObjectValue";
@@ -27,12 +28,17 @@ export function ClaimValueRenderer({
 		return <ImageValue dataUrl={imageResult.dataUrl} />;
 	}
 
-	// 2. Date detection
+	// 2. Coded value detection (e.g., sex codes per ISO/IEC 5218)
+	if (isCodedValue(fieldName, value)) {
+		return <CodedValue value={value as number} fieldName={fieldName} />;
+	}
+
+	// 3. Date detection
 	if (isDateValue(value, fieldName)) {
 		return <DateValue value={value} fieldName={fieldName} />;
 	}
 
-	// 3. Array detection
+	// 4. Array detection
 	if (Array.isArray(value)) {
 		return (
 			<ArrayValue
@@ -43,7 +49,7 @@ export function ClaimValueRenderer({
 		);
 	}
 
-	// 4. Object detection (non-null, typeof === 'object')
+	// 5. Object detection (non-null, typeof === 'object')
 	if (value !== null && typeof value === "object") {
 		return (
 			<ObjectValue
@@ -54,10 +60,11 @@ export function ClaimValueRenderer({
 		);
 	}
 
-	// 5. Primitive values (string, number, boolean, null, undefined)
+	// 6. Primitive values (string, number, boolean, null, undefined)
 	return (
 		<PrimitiveValue
 			value={value as string | number | boolean | null | undefined}
+			fieldName={fieldName}
 		/>
 	);
 }

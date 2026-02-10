@@ -6,30 +6,47 @@ interface DateValueProps {
 	fieldName: string;
 }
 
+/**
+ * Formats a relative time with better precision.
+ * Shows compound units (e.g., "2 years, 3 months") for more exact representation.
+ */
 function formatRelativeTime(date: Date): string {
 	const now = new Date();
 	const diffMs = date.getTime() - now.getTime();
-	const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
-	const diffMonths = Math.round(diffDays / 30);
-	const diffYears = Math.round(diffDays / 365);
-
 	const isFuture = diffMs > 0;
-	const absDays = Math.abs(diffDays);
-	const absMonths = Math.abs(diffMonths);
-	const absYears = Math.abs(diffYears);
 
-	if (absYears >= 1) {
-		const unit = absYears === 1 ? "year" : "years";
-		return isFuture ? `in ${absYears} ${unit}` : `${absYears} ${unit} ago`;
+	// Calculate total days
+	const totalDays = Math.abs(Math.round(diffMs / (1000 * 60 * 60 * 24)));
+
+	// Calculate years, remaining months, and remaining days
+	const years = Math.floor(totalDays / 365);
+	const remainingDaysAfterYears = totalDays % 365;
+	const months = Math.floor(remainingDaysAfterYears / 30);
+	const days = remainingDaysAfterYears % 30;
+
+	// Build parts array for compound display
+	const parts: string[] = [];
+
+	if (years > 0) {
+		parts.push(`${years} ${years === 1 ? "year" : "years"}`);
 	}
 
-	if (absMonths >= 1) {
-		const unit = absMonths === 1 ? "month" : "months";
-		return isFuture ? `in ${absMonths} ${unit}` : `${absMonths} ${unit} ago`;
+	if (months > 0) {
+		parts.push(`${months} ${months === 1 ? "month" : "months"}`);
 	}
 
-	const unit = absDays === 1 ? "day" : "days";
-	return isFuture ? `in ${absDays} ${unit}` : `${absDays} ${unit} ago`;
+	// Only show days if no years (to avoid excessive precision like "2 years, 3 months, 15 days")
+	if (years === 0 && days > 0) {
+		parts.push(`${days} ${days === 1 ? "day" : "days"}`);
+	}
+
+	// Handle edge case: less than a day
+	if (parts.length === 0) {
+		return isFuture ? "in less than a day" : "less than a day ago";
+	}
+
+	const timeString = parts.join(", ");
+	return isFuture ? `in ${timeString}` : `${timeString} ago`;
 }
 
 function formatDateByMode(date: Date, mode: DateRenderMode): string {
