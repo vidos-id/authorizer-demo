@@ -213,10 +213,22 @@ function PolicyResultItem({ result }: { result: PolicyResult }) {
 										{error.detail}
 									</p>
 								)}
-								<div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-red-600 dark:text-red-400">
+								<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-red-600 dark:text-red-400">
 									{error.status && <span>Status: {error.status}</span>}
 									{error.vidosType && (
-										<span className="font-mono">Type: {error.vidosType}</span>
+										<span className="flex items-center gap-1.5">
+											<span className="font-mono">Type: {error.vidosType}</span>
+											<a
+												href={`https://vidos.id/docs/reference/errors/${error.vidosType}/`}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-200 transition-colors"
+												aria-label="View error documentation"
+												title={`View documentation for "${error.vidosType}" error`}
+											>
+												<BookText className="h-3.5 w-3.5" />
+											</a>
+										</span>
 									)}
 								</div>
 								{error.errors && error.errors.length > 0 && (
