@@ -6,7 +6,7 @@ import {
 	MessageCircle,
 } from "lucide-react";
 import { useState } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -24,51 +24,15 @@ import { PrettyJson } from "@/components/ui/PrettyJson";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SUPPORT_CONFIG } from "@/config/support";
-import { cn } from "@/lib/utils";
 import { useAuthorizationStatusQuery } from "@/queries/useAuthorizationStatusQuery";
 import { useCredentialsQuery } from "@/queries/useCredentialsQuery";
 import { usePolicyResponseQuery } from "@/queries/usePolicyResponseQuery";
 import { useAppStore } from "@/stores/appStore";
-import type { AuthorizationStatus, PolicyResult } from "@/types/app";
+import type { PolicyResult } from "@/types/app";
 import { downloadDebugInfo, generateDebugInfo } from "@/utils/debugExport";
 import { CredentialsDisplay } from "./CredentialsDisplay";
 import { PolicyResults } from "./PolicyResults";
-
-const statusConfig: Record<
-	AuthorizationStatus,
-	{ title: string; description: string; variant: "default" | "destructive" }
-> = {
-	created: {
-		title: "Created",
-		description: "Authorization request was created",
-		variant: "default",
-	},
-	pending: {
-		title: "Pending",
-		description: "Authorization is being processed",
-		variant: "default",
-	},
-	authorized: {
-		title: "Authorized",
-		description: "The credential was successfully authorized",
-		variant: "default",
-	},
-	rejected: {
-		title: "Rejected",
-		description: "The authorizer rejected the wallet credential",
-		variant: "destructive",
-	},
-	error: {
-		title: "Error",
-		description: "An error occurred during authorization",
-		variant: "destructive",
-	},
-	expired: {
-		title: "Expired",
-		description: "The authorization request has expired",
-		variant: "destructive",
-	},
-};
+import { StatusCard } from "./StatusCard";
 
 export function ResultStage() {
 	const backToCreateStage = useAppStore((state) => state.backToCreateStage);
@@ -130,7 +94,6 @@ export function ResultStage() {
 	const error = flowStore.error;
 
 	const status = statusData?.status;
-	const config = status ? statusConfig[status] : null;
 	const hasPolicyResults = policyResponse && policyResponse.data.length > 0;
 
 	return (
@@ -142,28 +105,7 @@ export function ResultStage() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6 md:space-y-8">
-				{config && (
-					<Alert variant={config.variant}>
-						<AlertTitle className="mb-1">
-							<span
-								className={cn(
-									"w-8 h-8 rounded-full inline-flex items-center justify-center text-lg shrink-0 mr-2",
-									status === "authorized" && "bg-green-100 text-green-600",
-									status === "rejected" && "bg-red-100 text-red-600",
-									status === "error" && "bg-red-100 text-red-600",
-									status === "expired" && "bg-yellow-100 text-yellow-600",
-								)}
-							>
-								{status === "authorized" && "✓"}
-								{status === "rejected" && "✗"}
-								{status === "error" && "!"}
-								{status === "expired" && "⏱"}
-							</span>
-							{config.title}
-						</AlertTitle>
-						<AlertDescription>{config.description}</AlertDescription>
-					</Alert>
-				)}
+				{status && <StatusCard status={status} />}
 
 				{(error || policyError) && (
 					<Alert variant="destructive">
