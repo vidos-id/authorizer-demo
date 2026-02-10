@@ -7,21 +7,56 @@ interface ArrayValueProps {
 }
 
 export function ArrayValue({ value, credentialType, format }: ArrayValueProps) {
-	return (
-		<div className="border border-border rounded-md p-3">
-			<ul className="list-disc list-inside space-y-1">
+	const isObjectArray = value.some(
+		(item) => typeof item === "object" && item !== null && !Array.isArray(item),
+	);
+
+	// For arrays of objects: show indexed items with dividers
+	if (isObjectArray) {
+		return (
+			<div className="border-l-[3px] border-gray-300 dark:border-gray-600 pl-4 mt-1 divide-y divide-border">
 				{value.map((item, index) => (
-					// biome-ignore lint/suspicious/noArrayIndexKey: Array items may not have stable keys
-					<li key={index} className="text-sm">
+					<div
+						// biome-ignore lint/suspicious/noArrayIndexKey: Array items may not have stable keys
+						key={index}
+						className={`py-2 first:pt-0 last:pb-0 ${
+							index % 2 === 1 ? "bg-muted/30" : ""
+						}`}
+					>
+						<div className="text-xs font-medium text-muted-foreground mb-2">
+							[{index + 1}]
+						</div>
 						<ClaimValueRenderer
 							value={item}
 							fieldName={`item-${index}`}
 							credentialType={credentialType}
 							format={format}
 						/>
-					</li>
+					</div>
 				))}
-			</ul>
+			</div>
+		);
+	}
+
+	// For arrays of primitives: show as striped rows
+	return (
+		<div className="border-l-[3px] border-gray-300 dark:border-gray-600 pl-4 mt-1 divide-y divide-border">
+			{value.map((item, index) => (
+				<div
+					// biome-ignore lint/suspicious/noArrayIndexKey: Array items may not have stable keys
+					key={index}
+					className={`py-1.5 first:pt-0 last:pb-0 text-sm ${
+						index % 2 === 1 ? "bg-muted/30" : ""
+					}`}
+				>
+					<ClaimValueRenderer
+						value={item}
+						fieldName={`item-${index}`}
+						credentialType={credentialType}
+						format={format}
+					/>
+				</div>
+			))}
 		</div>
 	);
 }

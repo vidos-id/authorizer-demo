@@ -1,4 +1,4 @@
-import { getClaimDisplayName } from "@/utils/claimDisplayName";
+import { toTitleCase } from "@/utils/claimDisplayName";
 import { ClaimValueRenderer } from "./index";
 
 interface ObjectValueProps {
@@ -12,23 +12,35 @@ export function ObjectValue({
 	credentialType,
 	format,
 }: ObjectValueProps) {
+	const entries = Object.entries(value);
 	return (
-		<div className="border border-border rounded-md p-3 space-y-2">
-			{Object.entries(value).map(([key, val]) => (
-				<div key={key} className="grid grid-cols-[auto_1fr] gap-2 items-start">
-					<span className="text-sm font-medium text-muted-foreground">
-						{getClaimDisplayName(key, credentialType, format)}:
-					</span>
-					<div className="text-sm">
-						<ClaimValueRenderer
-							value={val}
-							fieldName={key}
-							credentialType={credentialType}
-							format={format}
-						/>
+		<div className="border-l-[3px] border-gray-300 dark:border-gray-600 pl-4 mt-1 divide-y divide-border">
+			{entries.map(([key, val], index) => {
+				const displayName = toTitleCase(key);
+				return (
+					<div
+						key={key}
+						className={`grid grid-cols-[auto_1fr] gap-2 items-start py-1.5 ${
+							index % 2 === 1 ? "bg-muted/30" : ""
+						}`}
+					>
+						<div className="text-sm font-medium text-muted-foreground">
+							<div className="font-medium text-muted-foreground">
+								{displayName}:
+							</div>
+							<div className="text-xs text-muted-foreground">({key})</div>
+						</div>
+						<div className="text-sm">
+							<ClaimValueRenderer
+								value={val}
+								fieldName={key}
+								credentialType={credentialType}
+								format={format}
+							/>
+						</div>
 					</div>
-				</div>
-			))}
+				);
+			})}
 		</div>
 	);
 }

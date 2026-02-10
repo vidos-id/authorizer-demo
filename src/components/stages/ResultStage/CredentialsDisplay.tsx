@@ -42,9 +42,9 @@ export function CredentialsDisplay({ enabled }: CredentialsDisplayProps) {
 
 	return (
 		<div className="space-y-4">
-			{data.credentials.map((credential, index) => (
+			{data.credentials.map((credential) => (
 				<CredentialCard
-					key={`${credential.path.join("-")}-${index}`}
+					key={credential.path.join("-")}
 					credential={credential}
 				/>
 			))}

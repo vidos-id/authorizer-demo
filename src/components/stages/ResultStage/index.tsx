@@ -26,6 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SUPPORT_CONFIG } from "@/config/support";
 import { cn } from "@/lib/utils";
 import { useAuthorizationStatusQuery } from "@/queries/useAuthorizationStatusQuery";
+import { useCredentialsQuery } from "@/queries/useCredentialsQuery";
 import { usePolicyResponseQuery } from "@/queries/usePolicyResponseQuery";
 import { useAppStore } from "@/stores/appStore";
 import type { AuthorizationStatus, PolicyResult } from "@/types/app";
@@ -83,6 +84,9 @@ export function ResultStage() {
 	// Get status and policy from React Query
 	const { data: statusData } = useAuthorizationStatusQuery();
 	const { data: policyResponse, error: policyError } = usePolicyResponseQuery({
+		enabled: activeTab === "policy-results",
+	});
+	const { data: credentialsData } = useCredentialsQuery({
 		enabled: activeTab === "policy-results",
 	});
 
@@ -249,7 +253,10 @@ export function ResultStage() {
 							value="policy-results"
 							className="space-y-6 md:space-y-8"
 						>
-							<PolicyResults results={policyResponse.data as PolicyResult[]} />
+							<PolicyResults
+								results={policyResponse.data as PolicyResult[]}
+								credentials={credentialsData}
+							/>
 
 							<Collapsible>
 								<CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground w-full">

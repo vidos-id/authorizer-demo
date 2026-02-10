@@ -7,10 +7,12 @@ import {
 } from "@/components/ui/collapsible";
 import { PrettyJson } from "@/components/ui/PrettyJson";
 import { getPolicyDefinition } from "@/config/policyDefinitions";
-import type { PolicyResult } from "@/types/app";
+import type { CredentialsResponse, PolicyResult } from "@/types/app";
+import { CredentialPathBreadcrumb } from "./CredentialPathBreadcrumb";
 
 interface PolicyResultsProps {
 	results: PolicyResult[];
+	credentials?: CredentialsResponse;
 }
 
 function camelToTitleCase(str: string): string {
@@ -20,7 +22,7 @@ function camelToTitleCase(str: string): string {
 		.trim();
 }
 
-export function PolicyResults({ results }: PolicyResultsProps) {
+export function PolicyResults({ results, credentials }: PolicyResultsProps) {
 	// Separate presentation-level results from credential-level results
 	const presentationResults = results.filter((r) => r.path.length === 0);
 	const credentialResults = results.filter((r) => r.path.length > 0);
@@ -40,6 +42,17 @@ export function PolicyResults({ results }: PolicyResultsProps) {
 		},
 		{} as Record<string, PolicyResult[]>,
 	);
+
+	// Create a map from credential UUID to format for quick lookup
+	const credentialFormatMap = new Map<string, string>();
+	if (credentials?.credentials) {
+		for (const cred of credentials.credentials) {
+			const credId = cred.path[0];
+			if (credId !== undefined) {
+				credentialFormatMap.set(String(credId), cred.format);
+			}
+		}
+	}
 
 	return (
 		<div className="space-y-4">
@@ -76,45 +89,45 @@ export function PolicyResults({ results }: PolicyResultsProps) {
 			)}
 
 			{/* Credential-level results */}
-			{Object.entries(groupedByCredential).map(
-				([credId, credResults], index) => {
-					const passed = credResults.filter((r) => !r.error).length;
-					const failed = credResults.filter((r) => r.error).length;
+			{Object.entries(groupedByCredential).map(([credId, credResults]) => {
+				const passed = credResults.filter((r) => !r.error).length;
+				const failed = credResults.filter((r) => r.error).length;
+				const format = credentialFormatMap.get(credId);
+				// Use the first result's path for breadcrumb display
+				const firstResultPath = credResults[0]?.path;
 
-					return (
-						<div
-							key={credId}
-							className="border rounded-md p-4 md:p-6 space-y-3"
-						>
-							<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-								<div>
-									<h4 className="font-medium">Credential {index + 1}</h4>
-									<p className="text-xs text-muted-foreground font-mono mt-1">
-										{credId}
-									</p>
-								</div>
-								<div className="flex gap-2">
-									{passed > 0 && (
-										<Badge variant="default">{passed} passed</Badge>
-									)}
-									{failed > 0 && (
-										<Badge variant="destructive">{failed} failed</Badge>
-									)}
-								</div>
-							</div>
-
-							<div className="space-y-2">
-								{credResults.map((result) => (
-									<PolicyResultItem
-										key={`${result.path.join("-")}-${result.policy}-${result.service}`}
-										result={result}
+				return (
+					<div key={credId} className="border rounded-md p-4 md:p-6 space-y-3">
+						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+							<h4 className="font-medium">
+								{format && firstResultPath ? (
+									<CredentialPathBreadcrumb
+										path={firstResultPath}
+										format={format}
 									/>
-								))}
+								) : (
+									<span className="font-mono">{credId}</span>
+								)}
+							</h4>
+							<div className="flex gap-2">
+								{passed > 0 && <Badge variant="default">{passed} passed</Badge>}
+								{failed > 0 && (
+									<Badge variant="destructive">{failed} failed</Badge>
+								)}
 							</div>
 						</div>
-					);
-				},
-			)}
+
+						<div className="space-y-2">
+							{credResults.map((result) => (
+								<PolicyResultItem
+									key={`${result.path.join("-")}-${result.policy}-${result.service}`}
+									result={result}
+								/>
+							))}
+						</div>
+					</div>
+				);
+			})}
 		</div>
 	);
 }

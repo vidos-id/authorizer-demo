@@ -10,6 +10,8 @@ export interface ClaimValueRendererProps {
 	fieldName: string;
 	credentialType: string;
 	format: string;
+	/** Whether this is a nested value (inside object/array) - affects display name lookup */
+	isNested?: boolean;
 }
 
 export function ClaimValueRenderer({

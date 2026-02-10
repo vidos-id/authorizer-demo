@@ -1,5 +1,5 @@
 export interface PathSegment {
-	label: string;
+	label: string | undefined;
 	value: string;
 }
 
@@ -25,7 +25,7 @@ export function interpretCredentialPath(
 
 	const [dcqlId, vpIndex, ...rest] = path;
 	const segments: PathSegment[] = [
-		{ label: "Credential", value: String(dcqlId) },
+		{ label: undefined, value: String(dcqlId) },
 		{ label: "VP Token", value: String(Number(vpIndex) + 1) },
 	];
 
@@ -43,7 +43,7 @@ export function interpretCredentialPath(
 		if (rest.length >= 2) {
 			const namespace = rest[1];
 			segments.push({
-				label: String(namespace),
+				label: "Namespace",
 				value: String(namespace),
 			});
 		}
