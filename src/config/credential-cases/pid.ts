@@ -139,7 +139,7 @@ const PID_ATTRIBUTE_MAPPINGS: PIDAttributeMapping[] = [
 		displayName: "Nationality",
 
 		mdocPath: ["nationality"],
-		sdJwtPath: ["nationalities", null],
+		sdJwtPath: ["nationalities"],
 	},
 	{
 		id: "issuance_date",
