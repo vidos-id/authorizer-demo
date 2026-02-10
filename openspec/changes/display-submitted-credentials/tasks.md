@@ -37,9 +37,20 @@
 
 ## 6. Testing & Polish
 
-- [ ] 6.1 Test with SD-JWT credential response - verify path breadcrumb, claim display names, date rendering
-- [ ] 6.2 Test with mdoc credential response - verify 4-segment path breadcrumb, namespace display, image rendering (portrait)
-- [ ] 6.3 Test with multiple credentials - verify all cards render, order preserved
+- [x] 6.1 Test with SD-JWT credential response - verify path breadcrumb, claim display names, date rendering
+- [x] 6.2 Test with mdoc credential response - verify 4-segment path breadcrumb, namespace display, image rendering (portrait)
+- [x] 6.3 Test with multiple credentials - verify all cards render, order preserved
 - [ ] 6.4 Test empty state (404) - verify "No credentials submitted" message
 - [ ] 6.5 Test error state - verify error displayed in tab
 - [x] 6.6 Run `bun run lint` and `bun run format` - fix any issues
+
+## 7. Refinements (added during implementation)
+
+- [x] 7.1 Add JWT claim display names (iat, exp, nbf, iss, sub, aud, jti) with origin annotations
+- [x] 7.2 Add human-readable format names (SD-JWT, mdoc) with labels
+- [x] 7.3 Fix array item bullet layout (inline instead of stacked)
+- [x] 7.4 Fix mdoc breadcrumb namespace duplication, remove "Credential:" label
+- [x] 7.5 Consolidate path rendering between PolicyResults and CredentialsDisplay
+- [x] 7.6 Add collapsible raw JSON view to each credential card
+- [x] 7.7 Visually separate breadcrumb from credential metadata with border
+- [x] 7.8 Create `src/utils/formatDisplayName.ts` for format display names

@@ -255,3 +255,53 @@ function getClaimDisplayName(
 ## Open Questions
 
 None - all clarified in proposal discussion.
+
+## Implementation Refinements
+
+The following refinements were made during implementation based on UX review:
+
+### 9. JWT Claim Display Names with Origin
+
+**Decision:** Return structured claim info with display name, original key, and origin.
+
+```typescript
+interface ClaimDisplayInfo {
+  displayName: string;  // "Issued At"
+  originalKey: string;  // "iat"
+  origin?: string;      // "JWT" or "Credential"
+}
+```
+
+Standard JWT claims mapped:
+- `iat` → "Issued At", `exp` → "Expires", `nbf` → "Not Before"
+- `iss` → "Issuer", `sub` → "Subject", `aud` → "Audience", `jti` → "JWT ID"
+
+UI shows original key as annotation: `Issued At (iat - JWT)`
+
+### 10. Format Display Names
+
+**Decision:** Map technical format strings to human-readable names via `getFormatDisplayName()`.
+
+| Technical | Display |
+|-----------|---------|
+| `dc+sd-jwt`, `ietf.dc-sd-jwt` | "SD-JWT (DC)" |
+| `mso_mdoc`, `mdoc` | "Mobile Document (mdoc)" |
+
+### 11. Simplified Breadcrumb Labels
+
+**Decision:** Remove redundant "Credential:" label, keep context labels for indices.
+
+- SD-JWT: `pid_cred › VP Token: 1`
+- mdoc: `driving-privileges-mdl-cred › VP Token: 1 › Document: 1 › Namespace: org.iso.18013.5.1`
+
+### 12. Raw Credential JSON View
+
+**Decision:** Add collapsible "Raw Credential" section to each card showing full JSON (path, format, credentialType, claims).
+
+### 13. Visual Separation in Card Header
+
+**Decision:** Separate breadcrumb from credential metadata with border divider for clearer visual hierarchy.
+
+### 14. Consolidated Path Rendering
+
+**Decision:** PolicyResults reuses `CredentialPathBreadcrumb` component for consistent path display across both tabs.
