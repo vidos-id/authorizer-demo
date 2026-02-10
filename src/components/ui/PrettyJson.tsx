@@ -182,22 +182,38 @@ export function PrettyJson({
 		depth: number,
 		path: string,
 		fieldKey?: string,
+		trailingComma?: boolean,
 	): React.ReactNode => {
+		const comma = trailingComma ? (
+			<span className="text-gray-500">,</span>
+		) : null;
+
 		if (value === null) {
-			return <span className="text-gray-500">null</span>;
+			return (
+				<span>
+					<span className="text-gray-500">null</span>
+					{comma}
+				</span>
+			);
 		}
 
 		if (typeof value === "boolean") {
 			return (
-				<span className="text-purple-600 dark:text-purple-400">
-					{String(value)}
+				<span>
+					<span className="text-purple-600 dark:text-purple-400">
+						{String(value)}
+					</span>
+					{comma}
 				</span>
 			);
 		}
 
 		if (typeof value === "number") {
 			return (
-				<span className="text-amber-600 dark:text-amber-400">{value}</span>
+				<span>
+					<span className="text-amber-600 dark:text-amber-400">{value}</span>
+					{comma}
+				</span>
 			);
 		}
 
@@ -211,6 +227,7 @@ export function PrettyJson({
 					<span className="text-green-600 dark:text-green-400" title={full}>
 						"{display}"
 					</span>
+					{comma}
 					{showCopy && (
 						<CopyButton
 							value={full}
@@ -223,7 +240,7 @@ export function PrettyJson({
 		}
 
 		if (Array.isArray(value)) {
-			return renderArray(value, depth, path, fieldKey);
+			return renderArray(value, depth, path, fieldKey, trailingComma);
 		}
 
 		if (typeof value === "object") {
@@ -232,10 +249,16 @@ export function PrettyJson({
 				depth,
 				path,
 				fieldKey,
+				trailingComma,
 			);
 		}
 
-		return <span className="text-gray-500">{String(value)}</span>;
+		return (
+			<span>
+				<span className="text-gray-500">{String(value)}</span>
+				{comma}
+			</span>
+		);
 	};
 
 	const renderArray = (
@@ -243,11 +266,21 @@ export function PrettyJson({
 		depth: number,
 		path: string,
 		fieldKey?: string,
+		trailingComma?: boolean,
 	): React.ReactNode => {
 		const isCollapsed = collapsed.has(path);
 
+		const comma = trailingComma ? (
+			<span className="text-gray-500">,</span>
+		) : null;
+
 		if (arr.length === 0) {
-			return <span className="text-gray-500">[]</span>;
+			return (
+				<span>
+					<span className="text-gray-500">[]</span>
+					{comma}
+				</span>
+			);
 		}
 
 		// Render compact for short primitive arrays
@@ -255,6 +288,7 @@ export function PrettyJson({
 			return (
 				<span className="inline-flex items-center gap-1 group/compact relative">
 					{renderCompactArray(arr, path)}
+					{comma}
 					<CopyButton
 						value={JSON.stringify(arr, null, 2)}
 						fieldKey={fieldKey}
@@ -291,12 +325,10 @@ export function PrettyJson({
 				) : (
 					arr.map((item, index) => {
 						const itemPath = `${path}[${index}]`;
+						const isLast = index === arr.length - 1;
 						return (
 							<div key={itemPath} style={{ marginLeft: "1rem" }}>
-								{renderValue(item, depth + 1, itemPath)}
-								{index < arr.length - 1 && (
-									<span className="text-gray-500">,</span>
-								)}
+								{renderValue(item, depth + 1, itemPath, undefined, !isLast)}
 							</div>
 						);
 					})
@@ -304,9 +336,15 @@ export function PrettyJson({
 				{!isCollapsed && (
 					<div>
 						<span className="text-gray-500">]</span>
+						{comma}
 					</div>
 				)}
-				{isCollapsed && <span className="text-gray-500">]</span>}
+				{isCollapsed && (
+					<span>
+						<span className="text-gray-500">]</span>
+						{comma}
+					</span>
+				)}
 			</span>
 		);
 	};
@@ -316,12 +354,21 @@ export function PrettyJson({
 		depth: number,
 		path: string,
 		fieldKey?: string,
+		trailingComma?: boolean,
 	): React.ReactNode => {
 		const keys = Object.keys(obj);
 		const isCollapsed = collapsed.has(path);
+		const comma = trailingComma ? (
+			<span className="text-gray-500">,</span>
+		) : null;
 
 		if (keys.length === 0) {
-			return <span className="text-gray-500">{"{}"}</span>;
+			return (
+				<span>
+					<span className="text-gray-500">{"{}"}</span>
+					{comma}
+				</span>
+			);
 		}
 
 		return (
@@ -351,16 +398,14 @@ export function PrettyJson({
 				) : (
 					keys.map((key, index) => {
 						const keyPath = `${path}.${key}`;
+						const isLast = index === keys.length - 1;
 						return (
 							<div key={keyPath} style={{ marginLeft: "1rem" }}>
 								<span className="text-blue-600 dark:text-blue-400">
 									"{key}"
 								</span>
 								<span className="text-gray-500">: </span>
-								{renderValue(obj[key], depth + 1, keyPath, key)}
-								{index < keys.length - 1 && (
-									<span className="text-gray-500">,</span>
-								)}
+								{renderValue(obj[key], depth + 1, keyPath, key, !isLast)}
 							</div>
 						);
 					})
@@ -368,9 +413,15 @@ export function PrettyJson({
 				{!isCollapsed && (
 					<div>
 						<span className="text-gray-500">{"}"}</span>
+						{comma}
 					</div>
 				)}
-				{isCollapsed && <span className="text-gray-500">{"}"}</span>}
+				{isCollapsed && (
+					<span>
+						<span className="text-gray-500">{"}"}</span>
+						{comma}
+					</span>
+				)}
 			</span>
 		);
 	};
