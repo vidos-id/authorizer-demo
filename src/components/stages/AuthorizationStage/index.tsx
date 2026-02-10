@@ -12,9 +12,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthorizationStatusQuery } from "@/queries/useAuthorizationStatusQuery";
 import { useAppStore } from "@/stores/appStore";
 import { AuthorizationRequestJwtViewer } from "./AuthorizationRequestJwtViewer";
-import { AuthorizeLink } from "./AuthorizeLink";
 import { DCAPIButton } from "./DCAPIButton";
-import { QRCodeDisplay } from "./QRCodeDisplay";
+import { WalletConnect } from "./WalletConnect";
 
 export function AuthorizationStage() {
 	const digitalCredentialGetRequest = useAppStore(
@@ -54,10 +53,7 @@ export function AuthorizationStage() {
 				{isDCAPI ? (
 					<DCAPIButton />
 				) : isDirectPost && authorizeUrl ? (
-					<>
-						<QRCodeDisplay url={authorizeUrl} />
-						<AuthorizeLink url={authorizeUrl} />
-					</>
+					<WalletConnect url={authorizeUrl} />
 				) : (
 					<div className="flex justify-center">
 						<Skeleton className="w-64 h-64" />
