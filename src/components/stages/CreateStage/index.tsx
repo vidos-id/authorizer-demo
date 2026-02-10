@@ -1,4 +1,4 @@
-import { Eye, Send } from "lucide-react";
+import { Code, Eye, LayoutTemplate, Send, Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
 import { JsonCollapsible } from "@/components/JsonCollapsible";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -215,9 +215,18 @@ export function CreateStage() {
 				>
 					<div className="flex justify-center">
 						<TabsList className="grid w-full max-w-md grid-cols-3">
-							<TabsTrigger value="templates">Templates</TabsTrigger>
-							<TabsTrigger value="builder">Builder</TabsTrigger>
-							<TabsTrigger value="json">Raw JSON</TabsTrigger>
+							<TabsTrigger value="templates" className="gap-1.5">
+								<LayoutTemplate className="h-4 w-4" />
+								<span className="hidden sm:inline">Templates</span>
+							</TabsTrigger>
+							<TabsTrigger value="builder" className="gap-1.5">
+								<Wrench className="h-4 w-4" />
+								<span className="hidden sm:inline">Builder</span>
+							</TabsTrigger>
+							<TabsTrigger value="json" className="gap-1.5">
+								<Code className="h-4 w-4" />
+								<span className="hidden sm:inline">Raw JSON</span>
+							</TabsTrigger>
 						</TabsList>
 					</div>
 

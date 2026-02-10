@@ -1,9 +1,11 @@
 import { useQueryClient } from "@tanstack/react-query";
 import {
 	ChevronDown,
+	CreditCard,
 	Download,
 	ExternalLink,
 	MessageCircle,
+	ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -184,9 +186,13 @@ export function ResultStage() {
 					>
 						<div className="flex justify-center">
 							<TabsList className="grid w-full max-w-md grid-cols-2">
-								<TabsTrigger value="policy-results">Policy Results</TabsTrigger>
-								<TabsTrigger value="credentials">
-									Submitted Credentials
+								<TabsTrigger value="policy-results" className="gap-1.5">
+									<ShieldCheck className="h-4 w-4" />
+									<span className="hidden sm:inline">Policy Results</span>
+								</TabsTrigger>
+								<TabsTrigger value="credentials" className="gap-1.5">
+									<CreditCard className="h-4 w-4" />
+									<span className="hidden sm:inline">Credentials</span>
 								</TabsTrigger>
 							</TabsList>
 						</div>
