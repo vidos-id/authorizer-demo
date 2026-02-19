@@ -25,6 +25,3 @@ dist-ssr
 *.sw?
 
 .serena
-
-# Generated TS API
-src/api/authorizer.ts
