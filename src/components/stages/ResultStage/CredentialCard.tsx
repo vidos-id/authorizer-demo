@@ -56,7 +56,7 @@ export function CredentialCard({ credential }: CredentialCardProps) {
 										{claimInfo.origin && ` - ${claimInfo.origin}`})
 									</div>
 								</div>
-								<div>
+								<div className="min-w-0">
 									<ClaimValueRenderer
 										value={value}
 										fieldName={key}

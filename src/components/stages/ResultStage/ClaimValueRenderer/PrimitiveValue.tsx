@@ -30,6 +30,19 @@ function looksLikeYear(value: number): boolean {
 	return Number.isInteger(value) && value >= 1900 && value <= 2100;
 }
 
+/**
+ * Checks if a string contains long unbreakable sequences (base64, non-breaking spaces, etc.)
+ * that need aggressive word-breaking to prevent overflow.
+ */
+function hasLongUnbreakableContent(value: string): boolean {
+	if (value.length < 40) return false;
+	// Contains non-breaking spaces
+	if (/\u00a0/.test(value)) return true;
+	// Looks like base64 or other long encoded content (no regular spaces)
+	if (value.length > 60 && !/\s/.test(value)) return true;
+	return false;
+}
+
 export function PrimitiveValue({ value, fieldName }: PrimitiveValueProps) {
 	if (value === null || value === undefined) {
 		return <span className="text-muted-foreground">-</span>;
@@ -47,5 +60,10 @@ export function PrimitiveValue({ value, fieldName }: PrimitiveValueProps) {
 		return <span>{value.toLocaleString()}</span>;
 	}
 
-	return <span>{String(value)}</span>;
+	const str = String(value);
+	if (hasLongUnbreakableContent(str)) {
+		return <span className="break-all [word-break:break-all]">{str}</span>;
+	}
+
+	return <span>{str}</span>;
 }

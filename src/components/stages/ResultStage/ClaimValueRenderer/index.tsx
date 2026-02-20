@@ -6,6 +6,10 @@ import { DateValue } from "./DateValue";
 import { ImageValue } from "./ImageValue";
 import { ObjectValue } from "./ObjectValue";
 import { PrimitiveValue } from "./PrimitiveValue";
+import {
+	isX5cCertificateArray,
+	X5cCertificateValue,
+} from "./X5cCertificateValue";
 
 export interface ClaimValueRendererProps {
 	value: unknown;
@@ -38,7 +42,12 @@ export function ClaimValueRenderer({
 		return <DateValue value={value} fieldName={fieldName} />;
 	}
 
-	// 4. Array detection
+	// 4. x5c certificate chain detection
+	if (isX5cCertificateArray(fieldName, value)) {
+		return <X5cCertificateValue certificates={value} />;
+	}
+
+	// 5. Array detection
 	if (Array.isArray(value)) {
 		return (
 			<ArrayValue
@@ -49,7 +58,7 @@ export function ClaimValueRenderer({
 		);
 	}
 
-	// 5. Object detection (non-null, typeof === 'object')
+	// 6. Object detection (non-null, typeof === 'object')
 	if (value !== null && typeof value === "object") {
 		return (
 			<ObjectValue
@@ -60,7 +69,7 @@ export function ClaimValueRenderer({
 		);
 	}
 
-	// 6. Primitive values (string, number, boolean, null, undefined)
+	// 7. Primitive values (string, number, boolean, null, undefined)
 	return (
 		<PrimitiveValue
 			value={value as string | number | boolean | null | undefined}

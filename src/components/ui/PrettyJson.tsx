@@ -1,6 +1,15 @@
-import { Check, ChevronRight, Clipboard, Copy } from "lucide-react";
+import {
+	Check,
+	ChevronRight,
+	Clipboard,
+	Copy,
+	ExternalLink,
+	WrapText,
+} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+
+type WrapMode = "auto" | "on" | "off";
 
 interface CopyButtonProps {
 	value: string;
@@ -74,18 +83,104 @@ function CopyJsonButton({ value }: { value: string }) {
 	);
 }
 
+const WRAP_MODE_LABELS: Record<WrapMode, string> = {
+	auto: "Wrap: Auto",
+	on: "Wrap: On",
+	off: "Wrap: Off",
+};
+
+function WrapToggleButton({
+	wrapMode,
+	onToggle,
+}: {
+	wrapMode: WrapMode;
+	onToggle: () => void;
+}) {
+	return (
+		<button
+			type="button"
+			onClick={onToggle}
+			className={cn(
+				"opacity-0 group-hover/json:opacity-100 sticky top-0 right-0 float-right z-10 flex items-center gap-1.5 px-2 py-1 text-xs rounded shadow-sm transition-opacity mr-1",
+				wrapMode === "on"
+					? "bg-blue-100 dark:bg-blue-900 hover:bg-blue-200 dark:hover:bg-blue-800"
+					: "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700",
+			)}
+			title={`Text wrapping: ${wrapMode}. Click to toggle.`}
+		>
+			<WrapText
+				className={cn(
+					"h-3.5 w-3.5",
+					wrapMode === "on"
+						? "text-blue-600 dark:text-blue-400"
+						: "text-gray-600 dark:text-gray-400",
+				)}
+			/>
+			<span
+				className={cn(
+					wrapMode === "on"
+						? "text-blue-600 dark:text-blue-400"
+						: "text-gray-600 dark:text-gray-400",
+				)}
+			>
+				{WRAP_MODE_LABELS[wrapMode]}
+			</span>
+		</button>
+	);
+}
+
+/**
+ * Checks if a string is a long unbreakable sequence that needs aggressive wrapping.
+ */
+function isLongUnbreakable(str: string): boolean {
+	if (str.length < 40) return false;
+	if (/\u00a0/.test(str)) return true;
+	if (str.length > 60 && !/\s/.test(str)) return true;
+	return false;
+}
+
+/**
+ * Checks if a field key path indicates an x5c certificate value.
+ */
+function isX5cPath(path: string): boolean {
+	return /\.x5c\[\d+\]$/.test(path) || /\.x5c$/.test(path);
+}
+
+function getX5cViewerUrl(cert: string): string {
+	return `https://x509.io/?cert=${encodeURIComponent(cert)}`;
+}
+
 interface PrettyJsonProps {
 	data: unknown;
 	className?: string;
 	maxStringLength?: number;
+	/** Controls text wrapping. "auto" wraps only problematic strings. Default: "auto" */
+	defaultWrapMode?: WrapMode;
 }
 
 export function PrettyJson({
 	data,
 	className,
 	maxStringLength,
+	defaultWrapMode = "auto",
 }: PrettyJsonProps) {
 	const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+	const [wrapMode, setWrapMode] = useState<WrapMode>(defaultWrapMode);
+
+	const cycleWrapMode = () => {
+		setWrapMode((prev) => {
+			if (prev === "auto") return "on";
+			if (prev === "on") return "off";
+			return "auto";
+		});
+	};
+
+	const shouldWrapString = (str: string): boolean => {
+		if (wrapMode === "on") return true;
+		if (wrapMode === "off") return false;
+		// auto: only wrap long unbreakable strings
+		return isLongUnbreakable(str);
+	};
 
 	const truncateString = (str: string): { display: string; full: string } => {
 		if (!maxStringLength || str.length <= maxStringLength) {
@@ -221,18 +316,45 @@ export function PrettyJson({
 			const { display, full } = truncateString(value);
 			const isTruncated = display !== full;
 			const showCopy = full.length > 10 || isTruncated;
+			const wrap = shouldWrapString(display);
+			const x5c = isX5cPath(path);
 
 			return (
-				<span className="inline-flex items-center gap-1 group/value relative">
-					<span className="text-green-600 dark:text-green-400" title={full}>
+				<span
+					className={cn(
+						"inline-flex items-center gap-1 group/value relative",
+						wrap && "flex-wrap [word-break:break-all]",
+					)}
+				>
+					<span
+						className={cn(
+							"text-green-600 dark:text-green-400",
+							wrap && "[word-break:break-all]",
+						)}
+						title={full}
+					>
 						"{display}"
 					</span>
 					{comma}
+					{x5c && full.length > 20 && (
+						<a
+							href={getX5cViewerUrl(full)}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="inline-flex items-center gap-0.5 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 opacity-70 hover:opacity-100"
+							title="View certificate in x509.io"
+						>
+							<ExternalLink className="h-3 w-3" />
+						</a>
+					)}
 					{showCopy && (
 						<CopyButton
 							value={full}
 							fieldKey={fieldKey}
-							className="opacity-0 group-hover/value:opacity-100 absolute -right-4"
+							className={cn(
+								"opacity-0 group-hover/value:opacity-100",
+								!x5c && "absolute -right-4",
+							)}
 						/>
 					)}
 				</span>
@@ -428,6 +550,7 @@ export function PrettyJson({
 
 	return (
 		<div className={cn("font-mono text-sm relative group/json", className)}>
+			<WrapToggleButton wrapMode={wrapMode} onToggle={cycleWrapMode} />
 			<CopyJsonButton value={JSON.stringify(data, null, 2)} />
 			{renderValue(data, 0, "$")}
 		</div>
