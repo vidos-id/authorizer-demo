@@ -1,4 +1,4 @@
-import { Bug, ChevronDown, GripHorizontal, Minus, Trash2 } from "lucide-react";
+import { Bug, GripHorizontal, Minus, Trash2 } from "lucide-react";
 import {
 	type MouseEvent as ReactMouseEvent,
 	useEffect,
@@ -393,34 +393,24 @@ export function PersistentDebugConsole() {
 					</div>
 				)}
 
-				<button
-					type="button"
-					onClick={() => setIsExpanded((prev) => !prev)}
-					className={cn(
-						"flex items-center gap-2 font-mono text-foreground transition-all",
-						isExpanded
-							? "h-8 w-[min(96vw,900px)] justify-center border border-t border-primary/30 bg-background/95 backdrop-blur rounded-none px-2.5 text-[11px] hover:bg-primary/5"
-							: "h-10 rounded-lg border-2 border-primary/50 bg-primary/10 px-4 text-xs shadow-md shadow-primary/10 backdrop-blur hover:border-primary/70 hover:bg-primary/15 hover:shadow-lg hover:shadow-primary/20 mb-4",
-					)}
-					aria-label={
-						isExpanded ? "Collapse debug console" : "Open debug console"
-					}
-				>
-					<Bug
-						className={cn(
-							"text-primary",
-							isExpanded ? "h-3.5 w-3.5" : "h-4 w-4",
-						)}
-					/>
-					<span className="uppercase tracking-wider font-semibold">Debug</span>
-					{isExpanded ? (
-						<ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-					) : events.length > 0 ? (
-						<span className="ml-0.5 rounded-full bg-primary/20 border border-primary/40 px-2 py-0.5 text-[10px] font-bold text-primary">
-							{events.length > 99 ? "99+" : events.length}
+				{!isExpanded && (
+					<button
+						type="button"
+						onClick={() => setIsExpanded(true)}
+						className="flex items-center gap-2 font-mono text-foreground transition-all h-10 rounded-lg border-2 border-primary/50 bg-primary/10 px-4 text-xs shadow-md shadow-primary/10 backdrop-blur hover:border-primary/70 hover:bg-primary/15 hover:shadow-lg hover:shadow-primary/20 mb-4"
+						aria-label="Open debug console"
+					>
+						<Bug className="h-4 w-4 text-primary" />
+						<span className="uppercase tracking-wider font-semibold">
+							Debug
 						</span>
-					) : null}
-				</button>
+						{events.length > 0 && (
+							<span className="ml-0.5 rounded-full bg-primary/20 border border-primary/40 px-2 py-0.5 text-[10px] font-bold text-primary">
+								{events.length > 99 ? "99+" : events.length}
+							</span>
+						)}
+					</button>
+				)}
 			</div>
 
 			<Dialog
