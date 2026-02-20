@@ -1,4 +1,4 @@
-import { Bug, ChevronDown, GripHorizontal, Trash2 } from "lucide-react";
+import { Bug, ChevronDown, GripHorizontal, Minus, Trash2 } from "lucide-react";
 import {
 	type MouseEvent as ReactMouseEvent,
 	useEffect,
@@ -105,6 +105,14 @@ export function PersistentDebugConsole() {
 	}, [isExpanded, visibleEvents]);
 
 	useEffect(() => {
+		const stopInteraction = () => {
+			if (!resizingRef.current && !draggingRef.current) return;
+			resizingRef.current = false;
+			draggingRef.current = false;
+			document.body.style.cursor = "";
+			document.body.style.userSelect = "";
+		};
+
 		const handleMouseMove = (event: MouseEvent) => {
 			if (resizingRef.current) {
 				const maxBottomSize = Math.min(680, window.innerHeight - 120);
@@ -121,21 +129,15 @@ export function PersistentDebugConsole() {
 			}
 		};
 
-		const handleMouseUp = () => {
-			if (!resizingRef.current && !draggingRef.current) {
-				return;
-			}
-			resizingRef.current = false;
-			draggingRef.current = false;
-			document.body.style.cursor = "";
-			document.body.style.userSelect = "";
-		};
-
 		window.addEventListener("mousemove", handleMouseMove);
-		window.addEventListener("mouseup", handleMouseUp);
+		window.addEventListener("mouseup", stopInteraction);
+		window.addEventListener("blur", stopInteraction);
+		document.addEventListener("mouseleave", stopInteraction);
 		return () => {
 			window.removeEventListener("mousemove", handleMouseMove);
-			window.removeEventListener("mouseup", handleMouseUp);
+			window.removeEventListener("mouseup", stopInteraction);
+			window.removeEventListener("blur", stopInteraction);
+			document.removeEventListener("mouseleave", stopInteraction);
 		};
 	}, []);
 
@@ -195,23 +197,39 @@ export function PersistentDebugConsole() {
 							<div className="flex items-center gap-2.5">
 								<GripHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
 								<Bug className="w-4 h-4 text-primary" />
-								<span className="text-sm font-semibold text-foreground font-mono uppercase tracking-wider">
+								<button
+									type="button"
+									onClick={() => setIsExpanded(false)}
+									className="text-sm font-semibold text-foreground font-mono uppercase tracking-wider hover:text-primary transition-colors"
+								>
 									Debug Console
-								</span>
+								</button>
 								<span className="text-xs text-muted-foreground font-mono">
 									{events.length} events
 								</span>
 							</div>
-							<Button
-								type="button"
-								variant="ghost"
-								size="sm"
-								onClick={clearDebugEvents}
-								className="h-7 gap-1.5 text-xs"
-							>
-								<Trash2 className="h-3 w-3" />
-								Clear
-							</Button>
+							<div className="flex items-center gap-1">
+								<Button
+									type="button"
+									variant="ghost"
+									size="sm"
+									onClick={clearDebugEvents}
+									className="h-7 gap-1.5 text-xs"
+								>
+									<Trash2 className="h-3 w-3" />
+									Clear
+								</Button>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									onClick={() => setIsExpanded(false)}
+									className="h-7 w-7"
+									aria-label="Minimize debug console"
+								>
+									<Minus className="h-3.5 w-3.5" />
+								</Button>
+							</div>
 						</div>
 
 						<div className="flex flex-1 min-h-0">
