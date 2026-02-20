@@ -71,6 +71,7 @@ export function ResultStage() {
 			authorizationId: flowStore.authorizationId,
 			authorizationRequest: flowStore.lastRequest,
 			authorizationResponse: flowStore.lastResponse,
+			debugEvents: flowStore.debugEvents,
 			statusData: statusData || null,
 			policyResponse: policyResponse || null,
 			flowState: {

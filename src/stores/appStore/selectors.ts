@@ -51,6 +51,7 @@ export const uiSelectors = {
 export const debugSelectors = {
 	lastRequest: (state: AppState) => state.lastRequest,
 	lastResponse: (state: AppState) => state.lastResponse,
+	debugEvents: (state: AppState) => state.debugEvents,
 };
 
 // Template selectors

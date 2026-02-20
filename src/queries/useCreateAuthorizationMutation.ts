@@ -11,6 +11,11 @@ import type {
 	CredentialSet,
 	ResponseModeConfig,
 } from "@/types/app";
+import {
+	logDebugError,
+	logVidosRequest,
+	logVidosResponse,
+} from "@/utils/debugEvents";
 import { buildAuthorizationRequestBody } from "@/utils/requestBuilder";
 
 interface CreateAuthorizationParams {
@@ -80,19 +85,74 @@ export function useCreateAuthorizationMutation() {
 			}
 
 			const client = createAuthorizerClient(authorizationUrl);
-			const { data, error } = await client.POST(
+			const endpoint = "/openid4/vp/v1_0/authorizations";
+			const startedAt = Date.now();
+
+			logVidosRequest({
+				operation: "create_authorization",
+				method: "POST",
+				endpoint,
+				payload: body,
+			});
+
+			const { data, error, response } = await client.POST(
 				"/openid4/vp/v1_0/authorizations",
 				{
 					body: body as CreateAuthorizationRequest,
 				},
 			);
 
+			const durationMs = Date.now() - startedAt;
+			const responseStatus = response?.status;
+			const responseOk = response?.ok;
+
 			if (error) {
-				throw new Error(error.message || "Failed to create authorization");
+				const requestError = new Error(
+					error.message || "Failed to create authorization",
+				);
+				logVidosResponse({
+					operation: "create_authorization",
+					method: "POST",
+					endpoint,
+					httpStatus: responseStatus,
+					durationMs,
+					ok: false,
+					payload: error,
+				});
+				logDebugError({
+					operation: "create_authorization",
+					method: "POST",
+					endpoint,
+					error: requestError,
+					httpStatus: responseStatus,
+					durationMs,
+					payload: error,
+				});
+
+				throw requestError;
 			}
 
+			logVidosResponse({
+				operation: "create_authorization",
+				method: "POST",
+				endpoint,
+				httpStatus: responseStatus,
+				durationMs,
+				ok: responseOk,
+				payload: data,
+			});
+
 			if (!data) {
-				throw new Error("No data returned");
+				const noDataError = new Error("No data returned");
+				logDebugError({
+					operation: "create_authorization",
+					method: "POST",
+					endpoint,
+					error: noDataError,
+					httpStatus: responseStatus,
+					durationMs,
+				});
+				throw noDataError;
 			}
 
 			// Validate response structure with Zod based on mode
@@ -104,7 +164,20 @@ export function useCreateAuthorizationMutation() {
 
 			if (!result.success) {
 				const errors = result.error.issues.map((i) => i.message).join(", ");
-				throw new Error(`Invalid response structure: ${errors}`);
+				const validationError = new Error(
+					`Invalid response structure: ${errors}`,
+				);
+				logDebugError({
+					operation: "create_authorization",
+					method: "POST",
+					endpoint,
+					error: validationError,
+					httpStatus: responseStatus,
+					durationMs,
+					payload: data,
+					errorCode: "invalid_response_structure",
+				});
+				throw validationError;
 			}
 
 			return data;

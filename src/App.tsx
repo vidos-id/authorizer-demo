@@ -1,6 +1,7 @@
 import "./App.css";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Github } from "lucide-react";
+import { PersistentDebugConsole } from "@/components/PersistentDebugConsole";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { queryClient } from "@/lib/queryClient";
 import { AuthorizationFlow } from "./components/AuthorizationFlow";
@@ -39,6 +40,7 @@ function App() {
 					<AuthorizationFlow />
 				</main>
 			</div>
+			<PersistentDebugConsole />
 		</QueryClientProvider>
 	);
 }

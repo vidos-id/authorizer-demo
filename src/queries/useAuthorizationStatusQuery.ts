@@ -2,6 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { createAuthorizerClient } from "@/api/client";
 import { selectAuthorizerUrl, useAppStore } from "@/stores/appStore";
 import type { AuthorizationStatus } from "@/types/app";
+import {
+	logDebugError,
+	logVidosRequest,
+	logVidosResponse,
+} from "@/utils/debugEvents";
 import { authorizationKeys } from "./keys";
 
 const TERMINAL_STATES: AuthorizationStatus[] = [
@@ -10,6 +15,8 @@ const TERMINAL_STATES: AuthorizationStatus[] = [
 	"error",
 	"expired",
 ];
+
+const lastLoggedStatusByAuthorizationId = new Map<string, string>();
 
 export function useAuthorizationStatusQuery() {
 	const authorizationId = useAppStore((state) => state.authorizationId);
@@ -21,7 +28,9 @@ export function useAuthorizationStatusQuery() {
 		queryFn: async () => {
 			if (!authorizationId) throw new Error("No authorization ID provided");
 			const client = createAuthorizerClient(authorizerUrl);
-			const { data, error } = await client.GET(
+			const endpoint = `/openid4/vp/v1_0/authorizations/${authorizationId}/status`;
+			const startedAt = Date.now();
+			const { data, error, response } = await client.GET(
 				"/openid4/vp/v1_0/authorizations/{authorizationId}/status",
 				{
 					params: {
@@ -29,9 +38,46 @@ export function useAuthorizationStatusQuery() {
 					},
 				},
 			);
+			const durationMs = Date.now() - startedAt;
+			const responseStatus = response?.status;
 
 			if (error) {
-				throw new Error(error.message || "Failed to fetch status");
+				const requestError = new Error(
+					error.message || "Failed to fetch status",
+				);
+				logDebugError({
+					operation: "authorization_status",
+					method: "GET",
+					endpoint,
+					authorizationId,
+					error: requestError,
+					httpStatus: responseStatus,
+					durationMs,
+					payload: error,
+				});
+				throw requestError;
+			}
+
+			const previousStatus =
+				lastLoggedStatusByAuthorizationId.get(authorizationId);
+			if (data?.status && data.status !== previousStatus) {
+				lastLoggedStatusByAuthorizationId.set(authorizationId, data.status);
+				logVidosRequest({
+					operation: "authorization_status",
+					method: "GET",
+					endpoint,
+					authorizationId,
+				});
+				logVidosResponse({
+					operation: "authorization_status",
+					method: "GET",
+					endpoint,
+					authorizationId,
+					httpStatus: responseStatus,
+					durationMs,
+					ok: true,
+					payload: data,
+				});
 			}
 
 			return data;

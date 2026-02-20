@@ -10,6 +10,7 @@ import type {
 	ResponseModeConfig,
 	SavedJsonRequest,
 } from "@/types/app";
+import type { DebugEvent } from "@/types/debug";
 import type { ConfigExport } from "@/utils/configExport";
 
 // Error type
@@ -111,8 +112,11 @@ export interface UiSlice {
 export interface DebugSlice {
 	lastRequest: object | null;
 	lastResponse: object | null;
+	debugEvents: DebugEvent[];
 	setLastRequest: (request: object | null) => void;
 	setLastResponse: (response: object | null) => void;
+	addDebugEvent: (event: Omit<DebugEvent, "id" | "timestamp">) => void;
+	clearDebugEvents: () => void;
 }
 
 // Combined state type

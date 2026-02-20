@@ -2,6 +2,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createAuthorizerClient } from "@/api/client";
 import { selectAuthorizerUrl, useAppStore } from "@/stores/appStore";
 import type { AuthorizationStatusResponse } from "@/types/api";
+import {
+	logDebugError,
+	logVidosRequest,
+	logVidosResponse,
+} from "@/utils/debugEvents";
 import { authorizationKeys } from "./keys";
 
 interface UsePolicyResponseQueryOptions {
@@ -33,14 +38,60 @@ export function usePolicyResponseQuery(
 		queryFn: async () => {
 			if (!authorizationId) throw new Error("No authorization ID provided");
 			const client = createAuthorizerClient(authorizerUrl);
-			const { data, error } = await client.GET(
+			const endpoint = `/openid4/vp/v1_0/authorizations/${authorizationId}/policy-response`;
+			const startedAt = Date.now();
+
+			logVidosRequest({
+				operation: "policy_response",
+				method: "GET",
+				endpoint,
+				authorizationId,
+			});
+
+			const { data, error, response } = await client.GET(
 				"/openid4/vp/v1_0/authorizations/{authorizationId}/policy-response",
 				{ params: { path: { authorizationId } } },
 			);
+			const durationMs = Date.now() - startedAt;
+			const responseStatus = response?.status;
 
 			if (error) {
-				throw new Error(error.message || "Failed to fetch policy response");
+				const requestError = new Error(
+					error.message || "Failed to fetch policy response",
+				);
+				logVidosResponse({
+					operation: "policy_response",
+					method: "GET",
+					endpoint,
+					authorizationId,
+					httpStatus: responseStatus,
+					durationMs,
+					ok: false,
+					payload: error,
+				});
+				logDebugError({
+					operation: "policy_response",
+					method: "GET",
+					endpoint,
+					authorizationId,
+					error: requestError,
+					httpStatus: responseStatus,
+					durationMs,
+					payload: error,
+				});
+				throw requestError;
 			}
+
+			logVidosResponse({
+				operation: "policy_response",
+				method: "GET",
+				endpoint,
+				authorizationId,
+				httpStatus: responseStatus,
+				durationMs,
+				ok: response?.ok,
+				payload: data,
+			});
 
 			return data;
 		},
