@@ -36,4 +36,75 @@ export const FLEXIBLE_TEMPLATES: RequestTemplate[] = [
 		],
 		isBuiltIn: true,
 	},
+	{
+		id: "sca-payment-ferry-ticket",
+		name: "SCA Payment Ferry Ticket",
+		description:
+			"Request payment wallet attestation with DCQL and OID4VP transaction data",
+		category: "flexible",
+		credentialRequests: [
+			{
+				id: "43bccd4e-22fa-4bf7-a088-ee6a7b9a071f",
+				documentType: "payment_wallet_attestation",
+				formatId: "payment_wallet_attestation_sd_jwt",
+				format: "dc+sd-jwt",
+				attributes: ["payment_currency", "payment_value", "payee"],
+				reactKey: generateReactKey(),
+			},
+		],
+		credentialSets: [],
+		transactionDataEntries: [
+			{
+				reactKey: generateReactKey(),
+				type: "payment_data",
+				credentialIds: ["43bccd4e-22fa-4bf7-a088-ee6a7b9a071f"],
+				hashesAlg: ["sha-256"],
+				customFields: [
+					{
+						key: "payment_data",
+						reactKey: generateReactKey(),
+						value: {
+							type: "object",
+							entries: [
+								{
+									key: "currency_amount",
+									reactKey: generateReactKey(),
+									value: {
+										type: "object",
+										entries: [
+											{
+												key: "currency",
+												reactKey: generateReactKey(),
+												value: {
+													type: "string",
+													value: "EUR",
+												},
+											},
+											{
+												key: "value",
+												reactKey: generateReactKey(),
+												value: {
+													type: "number",
+													value: "25",
+												},
+											},
+										],
+									},
+								},
+								{
+									key: "payee",
+									reactKey: generateReactKey(),
+									value: {
+										type: "string",
+										value: "Fast Ferries",
+									},
+								},
+							],
+						},
+					},
+				],
+			},
+		],
+		isBuiltIn: true,
+	},
 ];

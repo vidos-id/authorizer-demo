@@ -10,6 +10,7 @@ import type {
 	CredentialRequestWithId,
 	CredentialSet,
 	ResponseModeConfig,
+	TransactionDataEntry,
 } from "@/types/app";
 import {
 	logDebugError,
@@ -23,6 +24,7 @@ interface CreateAuthorizationParams {
 	credentialRequests?: CredentialRequestWithId[];
 	responseModeConfig?: ResponseModeConfig;
 	credentialSets?: CredentialSet[];
+	transactionDataEntries?: TransactionDataEntry[];
 	rawRequestBody?: unknown; // For JSON mode
 }
 
@@ -80,6 +82,7 @@ export function useCreateAuthorizationMutation() {
 					params.credentialRequests,
 					params.responseModeConfig,
 					params.credentialSets,
+					params.transactionDataEntries,
 				);
 				responseMode = params.responseModeConfig.mode;
 			}
@@ -193,6 +196,7 @@ export function useCreateAuthorizationMutation() {
 					variables.credentialRequests,
 					variables.responseModeConfig,
 					variables.credentialSets,
+					variables.transactionDataEntries,
 				);
 			}
 

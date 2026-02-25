@@ -14,6 +14,7 @@ const initialSessionState = {
 const resetStateForFresh = {
 	credentialRequests: [],
 	credentialSets: [],
+	transactionDataEntries: [],
 	responseModeConfig: { mode: "direct_post.jwt" } as ResponseModeConfig,
 	useRawJsonMode: false,
 	rawJsonContent: "",

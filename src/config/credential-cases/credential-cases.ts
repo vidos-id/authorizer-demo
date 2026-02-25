@@ -1,5 +1,6 @@
 import { HEALTH_ID_CREDENTIAL_CASE_DEFINITION } from "./health-id";
 import { MDL_CREDENTIAL_CASE_DEFINITION } from "./mdl";
+import { PAYMENT_WALLET_ATTESTATION_CREDENTIAL_CASE_DEFINITION } from "./payment-wallet-attestation";
 import { PHOTO_ID_CREDENTIAL_CASE_DEFINITION } from "./photo-id";
 import { PID_CREDENTIAL_CASE_DEFINITION } from "./pid";
 import type { CredentialCaseDefinition } from "./types";
@@ -9,4 +10,5 @@ export const CREDENTIAL_CASES: CredentialCaseDefinition[] = [
 	MDL_CREDENTIAL_CASE_DEFINITION,
 	PHOTO_ID_CREDENTIAL_CASE_DEFINITION,
 	HEALTH_ID_CREDENTIAL_CASE_DEFINITION,
+	PAYMENT_WALLET_ATTESTATION_CREDENTIAL_CASE_DEFINITION,
 ];

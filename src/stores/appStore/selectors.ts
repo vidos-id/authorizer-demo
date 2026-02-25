@@ -12,6 +12,7 @@ export const configSelectors = {
 export const credentialRequestsSelectors = {
 	credentialRequests: (state: AppState) => state.credentialRequests,
 	credentialSets: (state: AppState) => state.credentialSets,
+	transactionDataEntries: (state: AppState) => state.transactionDataEntries,
 };
 
 // Response mode selectors

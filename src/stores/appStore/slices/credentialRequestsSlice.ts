@@ -1,4 +1,5 @@
 import { generateCredentialSetId, generateReactKey } from "@/utils/id";
+import { createDefaultTransactionDataEntry } from "@/utils/transactionData";
 import type { CredentialRequestsSlice, SliceCreator } from "../types";
 
 export const createCredentialRequestsSlice: SliceCreator<
@@ -6,6 +7,7 @@ export const createCredentialRequestsSlice: SliceCreator<
 > = (set) => ({
 	credentialRequests: [],
 	credentialSets: [],
+	transactionDataEntries: [],
 
 	setCredentialRequests: (credentialRequests) =>
 		set({ credentialRequests, selectedTemplateId: null }),
@@ -42,11 +44,19 @@ export const createCredentialRequestsSlice: SliceCreator<
 					// Remove empty options
 					.filter((option) => option.length > 0),
 			}));
+
+			const transactionDataEntries = state.transactionDataEntries.map(
+				(entry) => ({
+					...entry,
+					credentialIds: entry.credentialIds.filter((credId) => credId !== id),
+				}),
+			);
 			// Note: Don't auto-delete empty credential sets (per spec 5.5)
 
 			return {
 				credentialRequests,
 				credentialSets,
+				transactionDataEntries,
 				selectedTemplateId: null,
 				error: null,
 			};
@@ -87,6 +97,34 @@ export const createCredentialRequestsSlice: SliceCreator<
 			error: null,
 		})),
 
+	addTransactionDataEntry: () =>
+		set((state) => ({
+			transactionDataEntries: [
+				...state.transactionDataEntries,
+				createDefaultTransactionDataEntry(),
+			],
+			selectedTemplateId: null,
+			error: null,
+		})),
+
+	updateTransactionDataEntry: (reactKey, updates) =>
+		set((state) => ({
+			transactionDataEntries: state.transactionDataEntries.map((entry) =>
+				entry.reactKey === reactKey ? { ...entry, ...updates } : entry,
+			),
+			selectedTemplateId: null,
+			error: null,
+		})),
+
+	removeTransactionDataEntry: (reactKey) =>
+		set((state) => ({
+			transactionDataEntries: state.transactionDataEntries.filter(
+				(entry) => entry.reactKey !== reactKey,
+			),
+			selectedTemplateId: null,
+			error: null,
+		})),
+
 	updateCredentialId: (oldId, newId) =>
 		set((state) => ({
 			credentialRequests: state.credentialRequests.map((req) =>
@@ -96,6 +134,12 @@ export const createCredentialRequestsSlice: SliceCreator<
 				...credSet,
 				options: credSet.options.map((option) =>
 					option.map((credId) => (credId === oldId ? newId : credId)),
+				),
+			})),
+			transactionDataEntries: state.transactionDataEntries.map((entry) => ({
+				...entry,
+				credentialIds: entry.credentialIds.map((credId) =>
+					credId === oldId ? newId : credId,
 				),
 			})),
 			error: null,

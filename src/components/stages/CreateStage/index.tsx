@@ -30,12 +30,16 @@ import { ResponseModeSelector } from "./ResponseModeSelector";
 import { SavedJsonRequestsManager } from "./SavedJsonRequestsManager";
 import { SaveTemplateDialog } from "./SaveTemplateDialog";
 import { TemplatesTab } from "./TemplatesTab";
+import { TransactionDataList } from "./TransactionDataList";
 import { TrustAnchorConfig } from "./TrustAnchorConfig";
 
 export function CreateStage() {
 	const authorizerUrl = useAppStore(selectAuthorizerUrl);
 	const credentialRequests = useAppStore((state) => state.credentialRequests);
 	const credentialSets = useAppStore((state) => state.credentialSets);
+	const transactionDataEntries = useAppStore(
+		(state) => state.transactionDataEntries,
+	);
 	const responseModeConfig = useAppStore((state) => state.responseModeConfig);
 	const showPreview = useAppStore((state) => state.showPreview);
 	const lastRequest = useAppStore((state) => state.lastRequest);
@@ -64,6 +68,7 @@ export function CreateStage() {
 		credentialRequests,
 		responseModeConfig,
 		credentialSets, // Task 5: Include credential sets in validation
+		transactionDataEntries,
 	);
 
 	// JSON mode validation (debounced)
@@ -92,6 +97,7 @@ export function CreateStage() {
 			credentialRequests,
 			responseModeConfig,
 			credentialSets,
+			transactionDataEntries,
 		);
 		setLastRequest(requestBody);
 		setShowPreview(true);
@@ -108,6 +114,7 @@ export function CreateStage() {
 				credentialRequests,
 				responseModeConfig,
 				credentialSets,
+				transactionDataEntries,
 			});
 		}
 		setShowPreview(false);
@@ -124,6 +131,7 @@ export function CreateStage() {
 				credentialRequests,
 				responseModeConfig,
 				credentialSets,
+				transactionDataEntries,
 			});
 		}
 	};
@@ -134,6 +142,7 @@ export function CreateStage() {
 				credentialRequests,
 				responseModeConfig,
 				credentialSets,
+				transactionDataEntries,
 			);
 			const prettyJson = JSON.stringify(requestBody, null, 2);
 			useAppStore.getState().setRawJsonContent(prettyJson);
@@ -262,6 +271,12 @@ export function CreateStage() {
 
 						{/* Credential Sets Section */}
 						<CredentialSetList />
+
+						<Separator />
+
+						<TransactionDataList />
+
+						<Separator />
 
 						{/* Builder hints */}
 						<div className="text-sm text-muted-foreground text-center space-y-1">

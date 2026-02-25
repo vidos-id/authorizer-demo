@@ -52,6 +52,7 @@ export const createTemplateSelectionSlice: SliceCreator<
 		set({
 			credentialRequests: template.credentialRequests,
 			credentialSets: template.credentialSets,
+			transactionDataEntries: template.transactionDataEntries ?? [],
 			selectedTemplateId: templateId,
 			error: null,
 		});

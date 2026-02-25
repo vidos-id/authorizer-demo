@@ -52,6 +52,47 @@ export interface CredentialSet {
 	reactKey: string; // UUID for tracking
 }
 
+export type TransactionDataHashAlgorithm = "sha-256" | "sha-384" | "sha-512";
+
+export type TransactionDataNode =
+	| {
+			type: "object";
+			entries: TransactionDataObjectField[];
+	  }
+	| {
+			type: "array";
+			items: TransactionDataNode[];
+	  }
+	| {
+			type: "string";
+			value: string;
+	  }
+	| {
+			type: "number";
+			value: string;
+	  }
+	| {
+			type: "boolean";
+			value: boolean;
+	  }
+	| {
+			type: "null";
+	  };
+
+export interface TransactionDataObjectField {
+	key: string;
+	value: TransactionDataNode;
+	reactKey: string;
+}
+
+export interface TransactionDataEntry {
+	reactKey: string;
+	type: string;
+	credentialIds: string[];
+	hashesAlg: TransactionDataHashAlgorithm[];
+	customFields: TransactionDataObjectField[];
+}
+
 // Response mode configuration
 export interface ResponseModeConfig {
 	mode: ResponseMode;
@@ -104,6 +145,7 @@ export interface AppState {
 
 	// Credential sets for DCQL
 	credentialSets: CredentialSet[];
+	transactionDataEntries: TransactionDataEntry[];
 
 	// Response mode configuration
 	responseModeConfig: ResponseModeConfig;
@@ -140,5 +182,6 @@ export interface RequestTemplate {
 	category: TemplateCategory;
 	credentialRequests: CredentialRequestWithId[];
 	credentialSets: CredentialSet[];
+	transactionDataEntries?: TransactionDataEntry[];
 	isBuiltIn: boolean;
 }

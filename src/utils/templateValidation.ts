@@ -25,11 +25,39 @@ export function validateTemplate(
 	}
 
 	// Check each credential request
+	const credentialIds = new Set(
+		template.credentialRequests.map((request) => request.id),
+	);
+
 	for (const request of template.credentialRequests) {
 		if (!availableFormatIds.has(request.formatId)) {
 			errors.push(
 				`Credential request "${request.id}" references unknown format "${request.formatId}"`,
 			);
+		}
+	}
+
+	for (const [index, entry] of (
+		template.transactionDataEntries ?? []
+	).entries()) {
+		if (entry.type.trim().length === 0) {
+			errors.push(
+				`Transaction data entry ${index + 1} is missing required type`,
+			);
+		}
+
+		if (entry.credentialIds.length === 0) {
+			errors.push(
+				`Transaction data entry ${index + 1} must reference at least one credential ID`,
+			);
+		}
+
+		for (const credentialId of entry.credentialIds) {
+			if (!credentialIds.has(credentialId)) {
+				errors.push(
+					`Transaction data entry ${index + 1} references unknown credential ID "${credentialId}"`,
+				);
+			}
 		}
 	}
 

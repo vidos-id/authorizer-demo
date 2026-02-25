@@ -9,6 +9,7 @@ import type {
 	RequestTemplate,
 	ResponseModeConfig,
 	SavedJsonRequest,
+	TransactionDataEntry,
 } from "@/types/app";
 import type { DebugEvent } from "@/types/debug";
 import type { ConfigExport } from "@/utils/configExport";
@@ -27,6 +28,7 @@ export interface ConfigSlice {
 export interface CredentialRequestsSlice {
 	credentialRequests: CredentialRequestWithId[];
 	credentialSets: CredentialSet[];
+	transactionDataEntries: TransactionDataEntry[];
 	setCredentialRequests: (requests: CredentialRequestWithId[]) => void;
 	addCredentialRequest: (request: CredentialRequestWithId) => void;
 	updateCredentialRequest: (
@@ -37,6 +39,12 @@ export interface CredentialRequestsSlice {
 	addCredentialSet: () => void;
 	updateCredentialSet: (id: string, updates: Partial<CredentialSet>) => void;
 	removeCredentialSet: (id: string) => void;
+	addTransactionDataEntry: () => void;
+	updateTransactionDataEntry: (
+		reactKey: string,
+		updates: Partial<TransactionDataEntry>,
+	) => void;
+	removeTransactionDataEntry: (reactKey: string) => void;
 	updateCredentialId: (oldId: string, newId: string) => void;
 }
 

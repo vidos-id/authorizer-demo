@@ -26,6 +26,9 @@ export function SaveTemplateDialog({ onClose }: SaveTemplateDialogProps) {
 
 	const credentialRequests = useAppStore((state) => state.credentialRequests);
 	const credentialSets = useAppStore((state) => state.credentialSets);
+	const transactionDataEntries = useAppStore(
+		(state) => state.transactionDataEntries,
+	);
 	const customRequestTemplates = useAppStore(
 		(state) => state.customRequestTemplates,
 	);
@@ -87,6 +90,7 @@ export function SaveTemplateDialog({ onClose }: SaveTemplateDialogProps) {
 			category: "flexible",
 			credentialRequests: [...credentialRequests],
 			credentialSets: [...credentialSets],
+			transactionDataEntries: [...transactionDataEntries],
 			isBuiltIn: false,
 		});
 
@@ -151,6 +155,12 @@ export function SaveTemplateDialog({ onClose }: SaveTemplateDialogProps) {
 								<p className="mt-1">
 									<span className="font-medium">Credential Sets:</span>{" "}
 									{credentialSets.length}
+								</p>
+							)}
+							{transactionDataEntries.length > 0 && (
+								<p className="mt-1">
+									<span className="font-medium">Transaction Data:</span>{" "}
+									{transactionDataEntries.length}
 								</p>
 							)}
 						</div>

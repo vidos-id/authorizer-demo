@@ -3,7 +3,9 @@ import type {
 	CredentialRequestWithId,
 	CredentialSet,
 	ResponseModeConfig,
+	TransactionDataEntry,
 } from "@/types/app";
+import { validateTransactionDataEntries } from "@/utils/transactionData";
 
 export interface ValidationResult {
 	valid: boolean;
@@ -92,6 +94,7 @@ export function validateAuthorizationRequest(
 	credentialRequests: CredentialRequestWithId[],
 	responseModeConfig: ResponseModeConfig,
 	credentialSets?: CredentialSet[],
+	transactionDataEntries?: TransactionDataEntry[],
 ): ValidationResult {
 	const errors: string[] = [];
 	const warnings: string[] = [];
@@ -147,6 +150,14 @@ export function validateAuthorizationRequest(
 		if (setsValidation.warnings) {
 			warnings.push(...setsValidation.warnings);
 		}
+	}
+
+	if (transactionDataEntries && transactionDataEntries.length > 0) {
+		const transactionDataValidation = validateTransactionDataEntries(
+			transactionDataEntries,
+			new Set(credentialRequests.map((request) => request.id)),
+		);
+		errors.push(...transactionDataValidation.errors);
 	}
 
 	return {
