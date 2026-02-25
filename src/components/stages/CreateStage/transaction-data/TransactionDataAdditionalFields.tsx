@@ -7,6 +7,7 @@ import type {
 	TransactionDataObjectField,
 } from "@/types/app";
 import { createDefaultTransactionDataField } from "@/utils/transactionData";
+import { getIndicatorClass, isPathActive } from "./nodes";
 import { TransactionDataNodeEditor } from "./TransactionDataNodeEditor";
 
 interface TransactionDataAdditionalFieldsProps {
@@ -37,21 +38,11 @@ export function TransactionDataAdditionalFields({
 		]);
 	};
 
+	const typeLabel = entry.type || "entry";
+
 	return (
 		<div className="space-y-3">
-			<div className="flex items-center gap-2">
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					onClick={handleAddAdditionalField}
-					title="additional_fields"
-				>
-					<Plus className="h-3 w-3 mr-1" />
-					Add Field to Additional Fields
-				</Button>
-				<Label title="additional_fields">Additional Fields</Label>
-			</div>
+			<Label title="additional_fields">Additional Fields</Label>
 
 			{entry.customFields.length === 0 ? (
 				<p className="text-sm text-muted-foreground">
@@ -59,64 +50,114 @@ export function TransactionDataAdditionalFields({
 				</p>
 			) : (
 				<div className="space-y-3">
-					{entry.customFields.map((field) => (
-						<div key={field.reactKey} className="space-y-2 border rounded p-3">
-							<div className="flex items-center gap-2">
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									onClick={() =>
-										updateAdditionalFields(
-											entry.customFields.filter(
-												(candidate) => candidate.reactKey !== field.reactKey,
-											),
-										)
+					{entry.customFields.map((field) => {
+						const fieldPath = `field:${field.reactKey}`;
+						const indicatorClass = getIndicatorClass(
+							isPathActive(fieldPath, hoveredPath),
+							isPathActive(fieldPath, focusedPath),
+						);
+
+						return (
+							<fieldset
+								key={field.reactKey}
+								data-tree-path={fieldPath}
+								aria-label="additional_field"
+								className={`space-y-2 pl-2 transition-colors ${indicatorClass}`}
+								onMouseEnter={() => onHoverPathChange(fieldPath)}
+								onMouseLeave={(event) => {
+									const nextTarget = event.relatedTarget as HTMLElement | null;
+									if (!nextTarget) {
+										onHoverPathChange(null);
+										return;
 									}
-									title={`remove ${field.key || "field"}`}
-								>
-									<Trash2 className="h-4 w-4 text-destructive" />
-								</Button>
-								<Input
-									value={field.key}
-									onChange={(event) => {
+									const nextContainer = nextTarget.closest("[data-tree-path]");
+									if (!(nextContainer instanceof HTMLElement)) {
+										onHoverPathChange(null);
+										return;
+									}
+									onHoverPathChange(nextContainer.dataset.treePath ?? null);
+								}}
+								onFocusCapture={() => onFocusPathChange(fieldPath)}
+								onBlurCapture={(event) => {
+									if (
+										event.currentTarget.contains(
+											event.relatedTarget as Node | null,
+										)
+									) {
+										return;
+									}
+									onFocusPathChange(null);
+								}}
+							>
+								<div className="flex items-center gap-2">
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon"
+										className="h-7 w-7 shrink-0"
+										onClick={() =>
+											updateAdditionalFields(
+												entry.customFields.filter(
+													(candidate) => candidate.reactKey !== field.reactKey,
+												),
+											)
+										}
+										title={`remove ${field.key || "field"}`}
+									>
+										<Trash2 className="h-3.5 w-3.5 text-destructive" />
+									</Button>
+									<Input
+										value={field.key}
+										onChange={(event) => {
+											updateAdditionalFields(
+												entry.customFields.map((candidate) =>
+													candidate.reactKey === field.reactKey
+														? { ...candidate, key: event.target.value }
+														: candidate,
+												),
+											);
+										}}
+										placeholder="Field Key"
+										title="field_key"
+										aria-label="Field Key"
+										className="font-mono text-xs"
+									/>
+								</div>
+
+								<TransactionDataNodeEditor
+									node={field.value}
+									breadcrumb={field.key || "field"}
+									path={`${fieldPath}.value`}
+									hoveredPath={hoveredPath}
+									focusedPath={focusedPath}
+									onHoverPathChange={onHoverPathChange}
+									onFocusPathChange={onFocusPathChange}
+									onChange={(nextValue) =>
 										updateAdditionalFields(
 											entry.customFields.map((candidate) =>
 												candidate.reactKey === field.reactKey
-													? { ...candidate, key: event.target.value }
+													? { ...candidate, value: nextValue }
 													: candidate,
 											),
-										);
-									}}
-									placeholder="Field Key"
-									title="field_key"
-									aria-label="Field Key"
-									className="font-mono text-xs"
+										)
+									}
 								/>
-							</div>
-
-							<TransactionDataNodeEditor
-								node={field.value}
-								breadcrumb={field.key || "field"}
-								path={`field:${field.reactKey}`}
-								hoveredPath={hoveredPath}
-								focusedPath={focusedPath}
-								onHoverPathChange={onHoverPathChange}
-								onFocusPathChange={onFocusPathChange}
-								onChange={(nextValue) =>
-									updateAdditionalFields(
-										entry.customFields.map((candidate) =>
-											candidate.reactKey === field.reactKey
-												? { ...candidate, value: nextValue }
-												: candidate,
-										),
-									)
-								}
-							/>
-						</div>
-					))}
+							</fieldset>
+						);
+					})}
 				</div>
 			)}
+
+			<Button
+				type="button"
+				variant="outline"
+				size="sm"
+				onClick={handleAddAdditionalField}
+				title="additional_fields"
+			>
+				<Plus className="h-3 w-3 mr-1" />
+				{`Add additional field to ${typeLabel}`}
+			</Button>
 		</div>
 	);
 }
