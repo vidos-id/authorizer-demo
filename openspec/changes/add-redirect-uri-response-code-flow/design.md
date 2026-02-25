@@ -68,9 +68,9 @@ Alternative considered:
 
 ### 5) Failure taxonomy and user messaging
 Map resolve failures to user-facing categories:
-- `expired/used/invalid response_code`: explain one-time + TTL behavior.
-- network/server failure: allow retry action.
-- suspected instance mismatch: include note that mobile browser may be using a different Authorizer instance than desktop flow.
+- 404/not-found-style resolve failures: treat as expected-by-design invalid/consumed/unresolvable code and explain one-time + TTL behavior.
+- network/500-style failures: treat as transient and allow retry action.
+- possible instance mismatch: include note that mobile browser may be using a different Authorizer instance than desktop flow.
 
 Rationale:
 - Gives actionable next steps instead of generic error.
@@ -80,7 +80,7 @@ Alternative considered:
 - Single generic error string. Rejected: poor debuggability and support experience.
 
 ### 6) Retry strategy
-Automatically attempt resolve once on load. Provide explicit user-triggered retry for transient failures only.
+Automatically attempt resolve once on load. Provide explicit user-triggered retry for transient failures only (network/5xx), not for 404 design-case failures.
 
 Rationale:
 - Respects one-time semantics.
@@ -91,7 +91,7 @@ Alternative considered:
 
 ## Risks / Trade-offs
 
-- [Resolved `authorizationId` may not be sufficient for all result data in some API variants] -> Reuse existing result fetchers first; if missing pieces, render partial result with explicit "data unavailable" section and keep raw status visible.
+- [`response_code` resolve may fail by design (one-time/TTL/404)] -> Show clear non-transient guidance and route user to start a new authorization.
 - [Misclassifying failures as instance mismatch] -> Phrase as "possible cause" and include neutral troubleshooting steps (verify configured Authorizer URL).
 - [URL cleanup may hinder debugging] -> Preserve debug details in UI state/log export rather than URL.
 - [Cross-device entry has no prior request context] -> Ensure support/debug block works with minimal context and still exports resolve/error metadata.
@@ -106,6 +106,4 @@ Alternative considered:
 
 ## Open Questions
 
-- Is `authorizationId` always sufficient to retrieve policy results and submitted credentials in all supported Authorizer versions?
-- Does resolve endpoint expose structured error codes that distinguish `expired`, `already_used`, `not_found`, and `wrong_instance`?
-- Should retry be shown only for network/5xx errors, or always available with warning?
+- None for current implementation scope. In this app, `authorizationId` is sufficient for status, policy results, and submitted credentials retrieval via existing queries.
