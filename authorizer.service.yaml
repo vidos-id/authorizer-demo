@@ -1503,6 +1503,16 @@ paths:
                       type: string
                       enum:
                         - haip
+                    transaction_data:
+                      description: Optional transaction_data to include in generated OID4VP wallet
+                        request objects.
+                      minItems: 1
+                      type: array
+                      items:
+                        type: string
+                        format: base64url
+                        pattern: ^[A-Za-z0-9_-]*$
+                        x-contentEncoding: base64url
                     query:
                       description: Presentation definition query specifying the credentials and claims
                         to request from the wallet
@@ -2652,6 +2662,16 @@ paths:
                           type: string
                           enum:
                             - haip
+                        transaction_data:
+                          description: Optional transaction_data to include in generated OID4VP wallet
+                            request objects.
+                          minItems: 1
+                          type: array
+                          items:
+                            type: string
+                            format: base64url
+                            pattern: ^[A-Za-z0-9_-]*$
+                            x-contentEncoding: base64url
                         responseMode:
                           type: string
                           enum:
@@ -3031,6 +3051,16 @@ paths:
                           type: string
                           enum:
                             - haip
+                        transaction_data:
+                          description: Optional transaction_data to include in generated OID4VP wallet
+                            request objects.
+                          minItems: 1
+                          type: array
+                          items:
+                            type: string
+                            format: base64url
+                            pattern: ^[A-Za-z0-9_-]*$
+                            x-contentEncoding: base64url
                         responseMode:
                           type: string
                           enum:

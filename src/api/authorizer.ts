@@ -1481,6 +1481,8 @@ export interface operations {
 							 * @enum {string}
 							 */
 							profile?: "haip";
+							/** @description Optional transaction_data to include in generated OID4VP wallet request objects. */
+							transaction_data?: string[];
 							/** @description Presentation definition query specifying the credentials and claims to request from the wallet */
 							query:
 								| {
@@ -2012,6 +2014,8 @@ export interface operations {
 									 * @enum {string}
 									 */
 									profile?: "haip";
+									/** @description Optional transaction_data to include in generated OID4VP wallet request objects. */
+									transaction_data?: string[];
 									/** @enum {string} */
 									responseMode: "dc_api" | "dc_api.jwt";
 									/** @enum {string} */
@@ -2190,6 +2194,8 @@ export interface operations {
 									 * @enum {string}
 									 */
 									profile?: "haip";
+									/** @description Optional transaction_data to include in generated OID4VP wallet request objects. */
+									transaction_data?: string[];
 									/** @enum {string} */
 									responseMode: "dc_api" | "dc_api.jwt";
 									/** @enum {string} */
