@@ -1,3 +1,12 @@
+import {
+	Car,
+	type LucideIcon,
+	MapPin,
+	ScanFace,
+	ShieldCheck,
+	Shuffle,
+	UserCheck,
+} from "lucide-react";
 import { useMemo } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BUILT_IN_TEMPLATES } from "@/config/request-templates/request-templates";
@@ -21,6 +30,45 @@ const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 	kyc: "KYC",
 	driving: "Driving",
 	flexible: "Flexible",
+};
+
+interface CategoryConfig {
+	icon: LucideIcon;
+	bgColor: string;
+	iconColor: string;
+}
+
+export const CATEGORY_CONFIG: Record<TemplateCategory, CategoryConfig> = {
+	"age-verification": {
+		icon: ShieldCheck,
+		bgColor: "bg-blue-100 dark:bg-blue-950/40",
+		iconColor: "text-blue-600 dark:text-blue-400",
+	},
+	identity: {
+		icon: UserCheck,
+		bgColor: "bg-violet-100 dark:bg-violet-950/40",
+		iconColor: "text-violet-600 dark:text-violet-400",
+	},
+	address: {
+		icon: MapPin,
+		bgColor: "bg-green-100 dark:bg-green-950/40",
+		iconColor: "text-green-600 dark:text-green-400",
+	},
+	kyc: {
+		icon: ScanFace,
+		bgColor: "bg-amber-100 dark:bg-amber-950/40",
+		iconColor: "text-amber-600 dark:text-amber-400",
+	},
+	driving: {
+		icon: Car,
+		bgColor: "bg-sky-100 dark:bg-sky-950/40",
+		iconColor: "text-sky-600 dark:text-sky-400",
+	},
+	flexible: {
+		icon: Shuffle,
+		bgColor: "bg-pink-100 dark:bg-pink-950/40",
+		iconColor: "text-pink-600 dark:text-pink-400",
+	},
 };
 
 interface TemplatesTabProps {
@@ -97,9 +145,12 @@ export function TemplatesTab({ onLoadToBuilder }: TemplatesTabProps) {
 				const templates = templatesByCategory[category];
 				if (templates.length === 0) return null;
 
+				const CategoryIcon = CATEGORY_CONFIG[category].icon;
+
 				return (
 					<div key={category} className="space-y-4">
-						<h3 className="text-lg font-semibold text-foreground">
+						<h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
+							<CategoryIcon className="h-4 w-4" />
 							{CATEGORY_LABELS[category]}
 						</h3>
 						<div className="grid grid-rows-[auto] gap-4 sm:grid-cols-2 lg:grid-cols-3">
