@@ -52,6 +52,12 @@ export const policyDefinitions: Record<string, PolicyDefinition> = {
 		docsUrl:
 			"https://vidos.id/docs/reference/services/verifier/policies/proof/",
 	},
+	"verifier.holderBinding": {
+		description:
+			"Verifies that a presented credential is bound to the presenting holder when holder binding data is available",
+		docsUrl:
+			"https://vidos.id/docs/reference/services/verifier/policies/holder-binding/",
+	},
 
 	// Default policies (no service specified)
 	format: {

@@ -182,6 +182,7 @@ export interface AppState {
 export type TemplateCategory =
 	| "age-verification"
 	| "identity"
+	| "payment"
 	| "address"
 	| "kyc"
 	| "driving"
