@@ -2,19 +2,39 @@ import type { AttributeDefinition, CredentialCaseDefinition } from "./types";
 
 const PAYMENT_WALLET_ATTESTATION_ATTRIBUTES: AttributeDefinition[] = [
 	{
-		id: "payment_currency",
-		displayName: "Payment Currency",
-		path: ["payment_data", "currency_amount", "currency"],
+		id: "funding_source_alias_id",
+		displayName: "Funding Source Alias ID",
+		path: ["fundingSource", "aliasId"],
 	},
 	{
-		id: "payment_value",
-		displayName: "Payment Value",
-		path: ["payment_data", "currency_amount", "value"],
+		id: "funding_source_currency",
+		displayName: "Funding Source Currency",
+		path: ["fundingSource", "currency"],
 	},
 	{
-		id: "payee",
-		displayName: "Payee",
-		path: ["payment_data", "payee"],
+		id: "funding_source_iin",
+		displayName: "Funding Source IIN",
+		path: ["fundingSource", "iin"],
+	},
+	{
+		id: "funding_source_pan_last_four",
+		displayName: "Funding Source PAN Last Four",
+		path: ["fundingSource", "panLastFour"],
+	},
+	{
+		id: "funding_source_scheme",
+		displayName: "Funding Source Scheme",
+		path: ["fundingSource", "scheme"],
+	},
+	{
+		id: "funding_source_type",
+		displayName: "Funding Source Type",
+		path: ["fundingSource", "type"],
+	},
+	{
+		id: "funding_source_icon",
+		displayName: "Funding Source Icon",
+		path: ["fundingSource", "icon"],
 	},
 ];
 
@@ -27,7 +47,7 @@ export const PAYMENT_WALLET_ATTESTATION_CREDENTIAL_CASE_DEFINITION: CredentialCa
 				id: "payment_wallet_attestation_sd_jwt",
 				format: "dc+sd-jwt",
 				displayName: "SD-JWT VC",
-				credentialType: "urn:eudi:wallet:pwa:1",
+				credentialType: "PaymentWalletAttestation",
 				attributes: PAYMENT_WALLET_ATTESTATION_ATTRIBUTES,
 			},
 		],

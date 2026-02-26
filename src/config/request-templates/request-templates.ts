@@ -6,11 +6,13 @@ import { DRIVING_TEMPLATES } from "./driving";
 import { FLEXIBLE_TEMPLATES } from "./flexible";
 import { IDENTITY_TEMPLATES } from "./identity";
 import { KYC_TEMPLATES } from "./kyc";
+import { PAYMENT_TEMPLATES } from "./payment";
 import type { RequestTemplate, TemplateCategory } from "./types";
 
 const ALL_TEMPLATES_UNVALIDATED: RequestTemplate[] = [
 	...AGE_VERIFICATION_TEMPLATES,
 	...IDENTITY_TEMPLATES,
+	...PAYMENT_TEMPLATES,
 	...ADDRESS_TEMPLATES,
 	...KYC_TEMPLATES,
 	...DRIVING_TEMPLATES,

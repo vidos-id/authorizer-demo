@@ -1,5 +1,6 @@
 import {
 	Car,
+	CreditCard,
 	type LucideIcon,
 	MapPin,
 	ScanFace,
@@ -17,6 +18,7 @@ import { TemplateCard } from "./TemplateCard";
 const CATEGORY_ORDER: TemplateCategory[] = [
 	"age-verification",
 	"identity",
+	"payment",
 	"address",
 	"kyc",
 	"driving",
@@ -26,6 +28,7 @@ const CATEGORY_ORDER: TemplateCategory[] = [
 const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 	"age-verification": "Age Verification",
 	identity: "Identity",
+	payment: "Payment",
 	address: "Address",
 	kyc: "KYC",
 	driving: "Driving",
@@ -48,6 +51,11 @@ export const CATEGORY_CONFIG: Record<TemplateCategory, CategoryConfig> = {
 		icon: UserCheck,
 		bgColor: "bg-violet-100 dark:bg-violet-950/40",
 		iconColor: "text-violet-600 dark:text-violet-400",
+	},
+	payment: {
+		icon: CreditCard,
+		bgColor: "bg-teal-100 dark:bg-teal-950/40",
+		iconColor: "text-teal-600 dark:text-teal-400",
 	},
 	address: {
 		icon: MapPin,
