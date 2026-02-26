@@ -52,6 +52,12 @@ export const policyDefinitions: Record<string, PolicyDefinition> = {
 		docsUrl:
 			"https://vidos.id/docs/reference/services/verifier/policies/proof/",
 	},
+	"verifier.status": {
+		description:
+			"Verifies whether a credential has been revoked or suspended by checking its status against supported status mechanisms",
+		docsUrl:
+			"https://vidos.id/docs/reference/services/verifier/policies/status/",
+	},
 	"verifier.holderBinding": {
 		description:
 			"Verifies that a presented credential is bound to the presenting holder when holder binding data is available",
