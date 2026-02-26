@@ -18,6 +18,12 @@ export const policyDefinitions: Record<string, PolicyDefinition> = {
 		docsUrl:
 			"https://vidos.id/docs/reference/services/validator/policies/trusted-issuer/",
 	},
+	"validator.transactionData": {
+		description:
+			"Validates kb-jwt transaction data hashes against expected transaction_data items using OID4VP hash rules",
+		docsUrl:
+			"https://vidos.id/docs/reference/services/validator/policies/transaction-data/",
+	},
 
 	// Authorizer service policies
 	"authorizer.validate": {

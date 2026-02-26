@@ -6,7 +6,7 @@ export const PAYMENT_TEMPLATES: RequestTemplate[] = [
 		id: "payment-high-value-laptop-purchase",
 		name: "Payment Laptop Purchase (iGrant)",
 		description:
-			"Request payment wallet attestation with DCQL and OID4VP transaction data for a high-value online laptop purchase. Uses the iGran's Payment Authenticator credential.",
+			"Request iGrant's Payment Authenticator credential for a high-value laptop purchase.",
 		category: "payment",
 		credentialRequests: [
 			{
