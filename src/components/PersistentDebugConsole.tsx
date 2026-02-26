@@ -1,6 +1,14 @@
-import { Bug, GripHorizontal, Minus, Trash2 } from "lucide-react";
+import {
+	Bug,
+	GripHorizontal,
+	Minus,
+	PanelLeftClose,
+	PanelLeftOpen,
+	Trash2,
+} from "lucide-react";
 import {
 	type MouseEvent as ReactMouseEvent,
+	useCallback,
 	useEffect,
 	useMemo,
 	useRef,
@@ -44,10 +52,28 @@ const DEFAULT_TYPE_VISIBILITY: Record<DebugEventType, boolean> = {
 };
 
 const PANEL_WIDTH = 900;
+const MOBILE_BREAKPOINT = 768;
+
+function useIsMobile() {
+	const [isMobile, setIsMobile] = useState(() => {
+		if (typeof window === "undefined") return false;
+		return window.innerWidth < MOBILE_BREAKPOINT;
+	});
+
+	useEffect(() => {
+		const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+		const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+		mql.addEventListener("change", onChange);
+		return () => mql.removeEventListener("change", onChange);
+	}, []);
+
+	return isMobile;
+}
 
 export function PersistentDebugConsole() {
 	const events = useAppStore((state) => state.debugEvents);
 	const clearDebugEvents = useAppStore((state) => state.clearDebugEvents);
+	const isMobile = useIsMobile();
 
 	const [isExpanded, setIsExpanded] = useState(() => {
 		if (typeof window === "undefined") return false;
@@ -71,6 +97,14 @@ export function PersistentDebugConsole() {
 	);
 	const [typeVisibility, setTypeVisibility] = useState(DEFAULT_TYPE_VISIBILITY);
 	const [selectedEvent, setSelectedEvent] = useState<DebugEvent | null>(null);
+	const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+
+	// Auto-collapse on mobile, auto-expand on desktop
+	useEffect(() => {
+		setSidebarOpen(!isMobile);
+	}, [isMobile]);
+
+	const toggleSidebar = useCallback(() => setSidebarOpen((prev) => !prev), []);
 
 	const listRef = useRef<HTMLDivElement | null>(null);
 	const resizingRef = useRef(false);
@@ -195,7 +229,24 @@ export function PersistentDebugConsole() {
 							className="flex items-center justify-between gap-3 px-4 py-2.5 border-b border-border/60 bg-muted/30 shrink-0 select-none cursor-grab active:cursor-grabbing"
 						>
 							<div className="flex items-center gap-2.5">
-								<GripHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+								{isMobile ? (
+									<button
+										type="button"
+										onClick={toggleSidebar}
+										className="p-0.5 rounded hover:bg-muted/50 transition-colors"
+										aria-label={
+											sidebarOpen ? "Hide filters panel" : "Show filters panel"
+										}
+									>
+										{sidebarOpen ? (
+											<PanelLeftClose className="h-4 w-4 text-muted-foreground" />
+										) : (
+											<PanelLeftOpen className="h-4 w-4 text-muted-foreground" />
+										)}
+									</button>
+								) : (
+									<GripHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
+								)}
 								<Bug className="w-4 h-4 text-primary" />
 								<button
 									type="button"
@@ -232,8 +283,28 @@ export function PersistentDebugConsole() {
 							</div>
 						</div>
 
-						<div className="flex flex-1 min-h-0">
-							<div className="w-44 shrink-0 flex flex-col gap-4 px-3 py-3 border-r border-border/60 bg-muted/10 overflow-y-auto">
+						<div className="relative flex flex-1 min-h-0">
+							{isMobile && sidebarOpen && (
+								<button
+									type="button"
+									className="absolute inset-0 z-10 bg-black/20"
+									onClick={toggleSidebar}
+									aria-label="Close filters panel"
+								/>
+							)}
+							<div
+								className={cn(
+									"flex flex-col gap-4 px-3 py-3 border-r border-border/60 bg-muted/10 overflow-y-auto transition-[transform,opacity] duration-200",
+									isMobile
+										? cn(
+												"absolute left-0 top-0 bottom-0 z-20 w-44 bg-background shadow-lg",
+												sidebarOpen
+													? "translate-x-0 opacity-100"
+													: "-translate-x-full opacity-0 pointer-events-none",
+											)
+										: "w-44 shrink-0",
+								)}
+							>
 								<div className="flex flex-col gap-1.5">
 									<span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">
 										Levels

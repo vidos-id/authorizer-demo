@@ -35,6 +35,9 @@ export function useResolveResponseCodeMutation() {
 		string
 	>({
 		mutationKey: ["authorization", "resolve-response-code", authorizerUrl],
+		retry: (failureCount, error) =>
+			error.kind === "transient" && failureCount < 3,
+		retryDelay: 500,
 		mutationFn: async (responseCode: string) => {
 			if (!authorizerUrl) {
 				throw {
@@ -45,10 +48,10 @@ export function useResolveResponseCodeMutation() {
 
 			const client = createAuthorizerClient(authorizerUrl);
 			const endpoint = "/openid4/vp/v1_0/response-code/resolve";
-			const startedAt = Date.now();
 			const body: ResolveResponseCodeRequest = {
 				response_code: responseCode,
 			};
+			const startedAt = Date.now();
 
 			logVidosRequest({
 				operation: "resolve_response_code",
