@@ -8,6 +8,10 @@ const initialSessionState = {
 	authorizeUrl: null,
 	digitalCredentialGetRequest: null,
 	expiresAt: null,
+	redirectFlowSource: null,
+	redirectResponseCode: null,
+	redirectResolveStatus: "idle" as const,
+	redirectResolveFailureKind: null,
 };
 
 // Additional reset values for startFresh
@@ -33,6 +37,31 @@ export const createSessionSlice: SliceCreator<SessionSlice> = (set) => ({
 	setDigitalCredentialGetRequest: (digitalCredentialGetRequest) =>
 		set({ digitalCredentialGetRequest }),
 	setExpiresAt: (expiresAt) => set({ expiresAt }),
+	setRedirectCallbackContext: (redirectResponseCode) =>
+		set({
+			redirectFlowSource: redirectResponseCode ? "redirect_uri" : null,
+			redirectResponseCode,
+			redirectResolveStatus: "idle",
+			redirectResolveFailureKind: null,
+		}),
+	setRedirectResolveStatus: (
+		redirectResolveStatus,
+		redirectResolveFailureKind,
+	) =>
+		set({
+			redirectResolveStatus,
+			redirectResolveFailureKind:
+				redirectResolveStatus === "failed"
+					? (redirectResolveFailureKind ?? "transient")
+					: null,
+		}),
+	clearRedirectCallbackContext: () =>
+		set({
+			redirectFlowSource: null,
+			redirectResponseCode: null,
+			redirectResolveStatus: "idle",
+			redirectResolveFailureKind: null,
+		}),
 
 	startFresh: () =>
 		set((state) => ({
@@ -53,6 +82,10 @@ export const createSessionSlice: SliceCreator<SessionSlice> = (set) => ({
 			authorizeUrl: null,
 			digitalCredentialGetRequest: null,
 			expiresAt: null,
+			redirectFlowSource: null,
+			redirectResponseCode: null,
+			redirectResolveStatus: "idle",
+			redirectResolveFailureKind: null,
 			showPreview: false,
 			error: null,
 		}),

@@ -22,6 +22,8 @@ export function useAuthorizationStatusQuery() {
 	const authorizationId = useAppStore((state) => state.authorizationId);
 	const authorizerUrl = useAppStore(selectAuthorizerUrl);
 	const stage = useAppStore((state) => state.stage);
+	const shouldFetchStatus =
+		!!authorizationId && (stage === "authorization" || stage === "result");
 
 	return useQuery({
 		queryKey: authorizationKeys.status(authorizationId ?? undefined),
@@ -82,8 +84,11 @@ export function useAuthorizationStatusQuery() {
 
 			return data;
 		},
-		enabled: stage === "authorization" && !!authorizationId,
+		enabled: shouldFetchStatus,
 		refetchInterval: (query) => {
+			// Poll only during active authorization. RESULT stage should read once.
+			if (stage !== "authorization") return false;
+
 			const status = query.state.data?.status;
 			if (!status) return 2500;
 

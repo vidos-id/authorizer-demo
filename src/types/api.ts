@@ -37,6 +37,19 @@ export type PolicyResponseData =
 export type CredentialsResponseData =
 	operations["getCredentials"]["responses"][200]["content"]["application/json"];
 
+export type ResolveResponseCodeRequest = NonNullable<
+	operations["resolveResponseCode"]["requestBody"]
+>["content"]["application/json"];
+
+export type ResolveResponseCodeResponse =
+	operations["resolveResponseCode"]["responses"][200]["content"]["application/json"];
+
+type ResolveResponseCodeErrorResponse =
+	operations["resolveResponseCode"]["responses"][400 | 401 | 404 | 500];
+
+export type ResolveResponseCodeError =
+	ResolveResponseCodeErrorResponse["content"]["application/json"];
+
 // Extract digitalCredentialGetRequest type from DC API response
 type DcApiCreateResponse = Extract<
 	CreateAuthorizationResponse,

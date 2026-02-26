@@ -6,6 +6,18 @@ import type {
 
 export type AppStage = "create" | "authorization" | "result";
 
+export type RedirectFlowSource = "redirect_uri";
+
+export type RedirectResolveStatus =
+	| "idle"
+	| "resolving"
+	| "resolved"
+	| "failed";
+
+export type RedirectResolveFailureKind =
+	| "invalid_or_expired_or_used"
+	| "transient";
+
 export type AuthorizationStatus =
 	| "created"
 	| "pending"

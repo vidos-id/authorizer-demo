@@ -4,7 +4,9 @@ import {
 	CreditCard,
 	Download,
 	ExternalLink,
+	Loader2,
 	MessageCircle,
+	RefreshCw,
 	ShieldCheck,
 } from "lucide-react";
 import { useState } from "react";
@@ -35,6 +37,7 @@ import { downloadDebugInfo, generateDebugInfo } from "@/utils/debugExport";
 import { CredentialsDisplay } from "./CredentialsDisplay";
 import { PolicyResults } from "./PolicyResults";
 import { StatusCard } from "./StatusCard";
+import { useRedirectResultFlow } from "./useRedirectResultFlow";
 
 export function ResultStage() {
 	const backToCreateStage = useAppStore((state) => state.backToCreateStage);
@@ -47,14 +50,24 @@ export function ResultStage() {
 		"policy-results",
 	);
 
+	const {
+		isRedirectFlow,
+		canFetchResultData,
+		redirectResolveStatus,
+		redirectResolveFailureKind,
+		resolveResponseCodeFromRedirect,
+		isResolvePending,
+	} = useRedirectResultFlow();
+
 	// Get status and policy from React Query
 	const { data: statusData } = useAuthorizationStatusQuery();
 	const { data: policyResponse, error: policyError } = usePolicyResponseQuery({
-		enabled: activeTab === "policy-results",
+		enabled: canFetchResultData && activeTab === "policy-results",
 	});
-	const { data: credentialsData } = useCredentialsQuery({
-		enabled: activeTab === "policy-results",
-	});
+	const { data: credentialsData, error: credentialsError } =
+		useCredentialsQuery({
+			enabled: canFetchResultData && activeTab === "policy-results",
+		});
 
 	const handleGoBack = () => {
 		backToCreateStage();
@@ -108,6 +121,23 @@ export function ResultStage() {
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="space-y-6 md:space-y-8">
+				{isRedirectFlow && (
+					<Alert>
+						<AlertDescription>
+							This page was opened via wallet redirect URI callback flow.
+						</AlertDescription>
+					</Alert>
+				)}
+
+				{isRedirectFlow && redirectResolveStatus === "resolving" && (
+					<Alert>
+						<AlertDescription className="flex items-center gap-2">
+							<Loader2 className="h-4 w-4 animate-spin" />
+							Resolving response code and loading authorization result...
+						</AlertDescription>
+					</Alert>
+				)}
+
 				{status && <StatusCard status={status} />}
 
 				{(error || policyError) && (
@@ -122,6 +152,29 @@ export function ResultStage() {
 						</AlertDescription>
 					</Alert>
 				)}
+
+				{canFetchResultData && (policyError || credentialsError) && (
+					<Alert>
+						<AlertDescription>
+							Authorization status is available, but some result details could
+							not be retrieved.
+						</AlertDescription>
+					</Alert>
+				)}
+
+				{isRedirectFlow &&
+					redirectResolveStatus === "failed" &&
+					redirectResolveFailureKind === "transient" && (
+						<Button
+							onClick={resolveResponseCodeFromRedirect}
+							variant="outline"
+							className="w-full sm:w-auto"
+							disabled={isResolvePending}
+						>
+							<RefreshCw className="h-4 w-4 mr-2" />
+							Retry response code resolution
+						</Button>
+					)}
 
 				{/* Support contact and debug export section */}
 				<div className="rounded-lg border bg-muted/50 p-4 space-y-3">
@@ -177,7 +230,7 @@ export function ResultStage() {
 
 				<Separator />
 
-				{hasPolicyResults && policyResponse && (
+				{canFetchResultData && hasPolicyResults && policyResponse && (
 					<Tabs
 						defaultValue="policy-results"
 						value={activeTab}

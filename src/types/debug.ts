@@ -7,7 +7,8 @@ export type DebugOperation =
 	| "authorization_status"
 	| "authorization_jwt"
 	| "policy_response"
-	| "credentials";
+	| "credentials"
+	| "resolve_response_code";
 
 export interface DebugEvent {
 	id: string;
@@ -50,4 +51,5 @@ export const DEBUG_OPERATION_LABELS: Record<DebugOperation, string> = {
 	authorization_jwt: "Authorization JWT",
 	policy_response: "Policy Response",
 	credentials: "Credentials",
+	resolve_response_code: "Resolve Response Code",
 };

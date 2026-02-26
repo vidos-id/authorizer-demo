@@ -40,6 +40,11 @@ export const sessionSelectors = {
 	digitalCredentialGetRequest: (state: AppState) =>
 		state.digitalCredentialGetRequest,
 	expiresAt: (state: AppState) => state.expiresAt,
+	redirectFlowSource: (state: AppState) => state.redirectFlowSource,
+	redirectResponseCode: (state: AppState) => state.redirectResponseCode,
+	redirectResolveStatus: (state: AppState) => state.redirectResolveStatus,
+	redirectResolveFailureKind: (state: AppState) =>
+		state.redirectResolveFailureKind,
 };
 
 // UI selectors

@@ -6,6 +6,9 @@ import type {
 	CredentialRequestWithId,
 	CredentialSet,
 	InstanceType,
+	RedirectFlowSource,
+	RedirectResolveFailureKind,
+	RedirectResolveStatus,
 	RequestTemplate,
 	ResponseModeConfig,
 	SavedJsonRequest,
@@ -95,6 +98,10 @@ export interface SessionSlice {
 	authorizeUrl: string | null;
 	digitalCredentialGetRequest: DigitalCredentialGetRequest | null;
 	expiresAt: string | null;
+	redirectFlowSource: RedirectFlowSource | null;
+	redirectResponseCode: string | null;
+	redirectResolveStatus: RedirectResolveStatus;
+	redirectResolveFailureKind: RedirectResolveFailureKind | null;
 	setStage: (stage: AppStage) => void;
 	setAuthorizationId: (id: string | null) => void;
 	setAuthorizeUrl: (url: string | null) => void;
@@ -102,6 +109,12 @@ export interface SessionSlice {
 		request: DigitalCredentialGetRequest | null,
 	) => void;
 	setExpiresAt: (expiresAt: string | null) => void;
+	setRedirectCallbackContext: (responseCode: string | null) => void;
+	setRedirectResolveStatus: (
+		status: RedirectResolveStatus,
+		failureKind?: RedirectResolveFailureKind | null,
+	) => void;
+	clearRedirectCallbackContext: () => void;
 	startFresh: () => void;
 	backToCreateStage: () => void;
 	importConfig: (config: ConfigExport) => void;
