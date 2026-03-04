@@ -186,7 +186,8 @@ export type TemplateCategory =
 	| "address"
 	| "kyc"
 	| "driving"
-	| "flexible";
+	| "flexible"
+	| "eudiw-unfold";
 
 export interface RequestTemplate {
 	id: string;

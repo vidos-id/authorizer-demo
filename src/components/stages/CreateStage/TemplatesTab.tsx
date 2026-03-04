@@ -1,6 +1,7 @@
 import {
 	Car,
 	CreditCard,
+	Globe,
 	type LucideIcon,
 	MapPin,
 	ScanFace,
@@ -23,6 +24,7 @@ const CATEGORY_ORDER: TemplateCategory[] = [
 	"kyc",
 	"driving",
 	"flexible",
+	"eudiw-unfold",
 ];
 
 const CATEGORY_LABELS: Record<TemplateCategory, string> = {
@@ -33,6 +35,7 @@ const CATEGORY_LABELS: Record<TemplateCategory, string> = {
 	kyc: "KYC",
 	driving: "Driving",
 	flexible: "Flexible",
+	"eudiw-unfold": "EUDIW Unfold",
 };
 
 interface CategoryConfig {
@@ -76,6 +79,11 @@ export const CATEGORY_CONFIG: Record<TemplateCategory, CategoryConfig> = {
 		icon: Shuffle,
 		bgColor: "bg-pink-100 dark:bg-pink-950/40",
 		iconColor: "text-pink-600 dark:text-pink-400",
+	},
+	"eudiw-unfold": {
+		icon: Globe,
+		bgColor: "bg-indigo-100 dark:bg-indigo-950/40",
+		iconColor: "text-indigo-600 dark:text-indigo-400",
 	},
 };
 

@@ -3,6 +3,7 @@ import { validateTemplate } from "@/utils/templateValidation";
 import { ADDRESS_TEMPLATES } from "./address";
 import { AGE_VERIFICATION_TEMPLATES } from "./age-verification";
 import { DRIVING_TEMPLATES } from "./driving";
+import { EUDIW_UNFOLD_TEMPLATES } from "./eudiw-unfold";
 import { FLEXIBLE_TEMPLATES } from "./flexible";
 import { IDENTITY_TEMPLATES } from "./identity";
 import { KYC_TEMPLATES } from "./kyc";
@@ -17,6 +18,7 @@ const ALL_TEMPLATES_UNVALIDATED: RequestTemplate[] = [
 	...KYC_TEMPLATES,
 	...DRIVING_TEMPLATES,
 	...FLEXIBLE_TEMPLATES,
+	...EUDIW_UNFOLD_TEMPLATES,
 ];
 
 // Validate built-in templates at startup
