@@ -61,24 +61,29 @@ export type DigitalCredentialGetRequest =
 // Digital Credential Get Response (from navigator.credentials.get())
 // Spec: https://www.w3.org/TR/digital-credentials/#the-digitalcredential-interface
 // Spec: https://openid.net/specs/openid-4-verifiable-presentations-1_0.html#appendix-A.4
+export type DigitalCredentialVpTokenData =
+	DcApiRequest["digitalCredentialGetResponse"];
+export type DigitalCredentialJwtData =
+	DcApiJwtRequest["digitalCredentialGetResponse"];
+
+type DigitalCredentialSuccessData =
+	| DigitalCredentialVpTokenData
+	| DigitalCredentialJwtData;
+
+type DigitalCredentialErrorData = {
+	error: string; // Error code as defined in OpenID4VP spec
+};
+
 export type DigitalCredentialGetResponse =
 	| {
-			// Success response with VP token
+			// Success response with VP token or encrypted JWT response
 			protocol: string; // e.g., "openid4vp-v1-unsigned" | "openid4vp-v1-signed" | "openid4vp-v1-multisigned"
-			data: {
-				vp_token: Record<
-					string,
-					| ({ [key: string]: unknown } | string)[]
-					| ({ [key: string]: unknown } | string)
-				>;
-			};
+			data: DigitalCredentialSuccessData;
 	  }
 	| {
 			// Error response
 			protocol: string;
-			data: {
-				error: string; // Error code as defined in OpenID4VP spec
-			};
+			data: DigitalCredentialErrorData;
 	  };
 
 // Type-safe endpoint paths for DC API

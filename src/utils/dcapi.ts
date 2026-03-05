@@ -2,6 +2,8 @@ import { z } from "zod";
 import type {
 	DigitalCredentialGetRequest,
 	DigitalCredentialGetResponse,
+	DigitalCredentialJwtData,
+	DigitalCredentialVpTokenData,
 } from "@/types/api";
 
 export interface DCAPISupport {
@@ -57,6 +59,13 @@ const digitalCredentialResponseSchema = z.union([
 			vp_token: z.record(z.string(), z.unknown()),
 		}),
 	}),
+	// Success response with encrypted JWT for dc_api.jwt
+	z.object({
+		protocol: z.string().min(1),
+		data: z.object({
+			response: z.string().min(1),
+		}),
+	}),
 	// Error response
 	z.object({
 		protocol: z.string().min(1),
@@ -96,4 +105,19 @@ export function isDigitalCredentialError(
 	response: DigitalCredentialGetResponse,
 ): response is { protocol: string; data: { error: string } } {
 	return "error" in response.data;
+}
+
+export function isDigitalCredentialJwtResponse(
+	response: DigitalCredentialGetResponse,
+): response is { protocol: string; data: DigitalCredentialJwtData } {
+	return "response" in response.data;
+}
+
+export function isDigitalCredentialVpTokenResponse(
+	response: DigitalCredentialGetResponse,
+): response is {
+	protocol: string;
+	data: DigitalCredentialVpTokenData;
+} {
+	return "vp_token" in response.data;
 }
