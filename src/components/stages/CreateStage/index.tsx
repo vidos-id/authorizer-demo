@@ -257,14 +257,6 @@ export function CreateStage() {
 							</p>
 						</div>
 
-						<ProfileSelector />
-
-						<Separator />
-
-						<ResponseModeSelector />
-
-						<Separator />
-
 						<CredentialRequestList />
 
 						<Separator />
@@ -275,6 +267,14 @@ export function CreateStage() {
 						<Separator />
 
 						<TransactionDataList />
+
+						<Separator />
+
+						<ProfileSelector />
+
+						<Separator />
+
+						<ResponseModeSelector />
 
 						<Separator />
 
