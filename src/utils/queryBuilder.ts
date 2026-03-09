@@ -2,7 +2,11 @@ import {
 	getFormatDefinitionById,
 	hasSelectivelyDisclosableAttributes,
 } from "@/config/credential-cases/utils";
-import type { CredentialRequestWithId, CredentialSet } from "@/types/app";
+import type {
+	CredentialRequestWithId,
+	CredentialSet,
+	Profile,
+} from "@/types/app";
 
 interface DCQLClaim {
 	path: (string | null)[];
@@ -13,6 +17,7 @@ interface DCQLCredential {
 	format: string;
 	meta?: Record<string, unknown>;
 	claims?: DCQLClaim[]; // Optional: undefined when no selectively disclosable attributes
+	require_cryptographic_holder_binding: boolean;
 }
 
 interface DCQLCredentialSet {
@@ -31,6 +36,7 @@ interface DCQLQuery {
 export function buildDCQLQueryMultiple(
 	requests: CredentialRequestWithId[],
 	credentialSets?: CredentialSet[],
+	profile?: Profile,
 ): DCQLQuery {
 	if (requests.length === 0) {
 		throw new Error("At least one credential request is required");
@@ -70,6 +76,10 @@ export function buildDCQLQueryMultiple(
 			format: request.format,
 			meta,
 			claims: claims.length > 0 ? claims : undefined,
+			require_cryptographic_holder_binding:
+				profile === "haip"
+					? true
+					: request.requireCryptographicHolderBinding !== false,
 		};
 
 		return credential;

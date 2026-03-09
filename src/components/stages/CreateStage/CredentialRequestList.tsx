@@ -39,6 +39,7 @@ export function CredentialRequestList() {
 			formatId: "pid_sd_jwt",
 			format: "dc+sd-jwt",
 			attributes: [], // Will be auto-filled when format is selected
+			requireCryptographicHolderBinding: true,
 		};
 
 		addCredentialRequest(newRequest);

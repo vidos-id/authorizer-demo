@@ -47,6 +47,7 @@ export interface CredentialRequest {
 	formatId: string;
 	format: CredentialFormat;
 	attributes: string[];
+	requireCryptographicHolderBinding?: boolean;
 }
 
 // Credential request with ID for UI management

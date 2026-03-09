@@ -13,7 +13,11 @@ export function buildAuthorizationRequestBody(
 	credentialSets?: CredentialSet[],
 	transactionDataEntries?: TransactionDataEntry[],
 ) {
-	const query = buildDCQLQueryMultiple(credentialRequests, credentialSets);
+	const query = buildDCQLQueryMultiple(
+		credentialRequests,
+		credentialSets,
+		responseModeConfig.profile,
+	);
 	const transactionData =
 		transactionDataEntries && transactionDataEntries.length > 0
 			? serializeTransactionDataEntries(transactionDataEntries)

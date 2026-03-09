@@ -14,6 +14,10 @@ export function ProfileSelector() {
 	const setResponseModeConfig = useAppStore(
 		(state) => state.setResponseModeConfig,
 	);
+	const credentialRequests = useAppStore((state) => state.credentialRequests);
+	const setCredentialRequests = useAppStore(
+		(state) => state.setCredentialRequests,
+	);
 
 	const handleProfileChange = (value: string) => {
 		const profile: Profile = value === "none" ? undefined : "haip";
@@ -26,6 +30,13 @@ export function ProfileSelector() {
 			} else if (config.mode === "dc_api") {
 				updatedMode = "dc_api.jwt";
 			}
+
+			setCredentialRequests(
+				credentialRequests.map((request) => ({
+					...request,
+					requireCryptographicHolderBinding: true,
+				})),
+			);
 		}
 
 		setResponseModeConfig({

@@ -2,6 +2,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -48,6 +49,7 @@ export function CredentialRequestBuilder({
 	const customCredentialCases = useAppStore(
 		(state) => state.customCredentialCases,
 	);
+	const profile = useAppStore((state) => state.responseModeConfig.profile);
 	const credentialSets = useAppStore((state) => state.credentialSets);
 	const updateCredentialId = useAppStore((state) => state.updateCredentialId);
 	const updateCredentialSet = useAppStore((state) => state.updateCredentialSet);
@@ -168,6 +170,17 @@ export function CredentialRequestBuilder({
 		onChange({
 			...request,
 			attributes,
+		});
+	};
+
+	const isHAIPProfile = profile === "haip";
+	const requireCryptographicHolderBinding =
+		isHAIPProfile || request.requireCryptographicHolderBinding !== false;
+
+	const handleHolderBindingToggle = (checked: boolean | "indeterminate") => {
+		onChange({
+			...request,
+			requireCryptographicHolderBinding: checked === true,
 		});
 	};
 
@@ -306,11 +319,36 @@ export function CredentialRequestBuilder({
 			</div>
 
 			{request.formatId && (
-				<AttributeSelector
-					formatId={request.formatId}
-					selectedAttributes={request.attributes}
-					onChange={handleAttributesChange}
-				/>
+				<>
+					<div className="flex items-start gap-3 rounded-md border p-3">
+						<Checkbox
+							id={`holder-binding-${request.reactKey}`}
+							checked={requireCryptographicHolderBinding}
+							disabled={isHAIPProfile}
+							onCheckedChange={handleHolderBindingToggle}
+						/>
+						<div className="space-y-0.5">
+							<Label
+								htmlFor={`holder-binding-${request.reactKey}`}
+								className="text-sm"
+							>
+								Require cryptographic holder binding
+							</Label>
+							<p className="text-xs text-muted-foreground">
+								Enabled by default for each DCQL credential query.
+								{isHAIPProfile
+									? " HAIP always requires this."
+									: " Disable to accept credentials without holder binding proof."}
+							</p>
+						</div>
+					</div>
+
+					<AttributeSelector
+						formatId={request.formatId}
+						selectedAttributes={request.attributes}
+						onChange={handleAttributesChange}
+					/>
+				</>
 			)}
 		</div>
 	);
