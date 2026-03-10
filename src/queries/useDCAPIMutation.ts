@@ -131,5 +131,8 @@ export function useDCAPIMutation() {
 				});
 			}
 		},
+		onError: (error) => {
+			console.error("DC API Mutation Error:", error);
+		},
 	});
 }

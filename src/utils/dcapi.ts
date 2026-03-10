@@ -95,7 +95,9 @@ export async function invokeDCAPI(
 	const result = digitalCredentialResponseSchema.safeParse(credential);
 
 	if (!result.success) {
-		throw new Error(`Invalid credential response: ${result.error.message}`);
+		throw new Error(`Invalid credential response: ${result.error.message}`, {
+			cause: result.error,
+		});
 	}
 
 	return result.data as DigitalCredentialGetResponse;

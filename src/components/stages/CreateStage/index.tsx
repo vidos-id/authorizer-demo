@@ -24,6 +24,7 @@ import { validateAuthorizationRequest } from "@/utils/validation";
 import { AppConfiguration } from "./AppConfiguration";
 import { CredentialRequestList } from "./CredentialRequestList";
 import { CredentialSetList } from "./CredentialSetList";
+import { DCApiJwtSdJwtWarning } from "./DCApiJwtSdJwtWarning";
 import { JsonEditor } from "./JsonEditor";
 import { ProfileSelector } from "./ProfileSelector";
 import { ResponseModeSelector } from "./ResponseModeSelector";
@@ -61,6 +62,13 @@ export function CreateStage() {
 	});
 
 	const mutation = useCreateAuthorizationMutation();
+	const hasSdJwtRequest = credentialRequests.some(
+		(request) => request.format === "dc+sd-jwt",
+	);
+	const showDcApiJwtSdJwtWarning =
+		viewMode === "builder" &&
+		responseModeConfig.mode === "dc_api.jwt" &&
+		hasSdJwtRequest;
 
 	// Builder mode validation
 	const builderValidation = validateAuthorizationRequest(
@@ -275,6 +283,8 @@ export function CreateStage() {
 						<Separator />
 
 						<ResponseModeSelector />
+
+						{showDcApiJwtSdJwtWarning && <DCApiJwtSdJwtWarning />}
 
 						<Separator />
 
